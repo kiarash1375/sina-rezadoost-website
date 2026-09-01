@@ -1,45 +1,48 @@
-# وب‌سایت دکتر سینا رضادوست — کاتالیزور
+# Dr. Sina Rezadoost Website — Catalyzer
 
-قالب معرفی و فروش دوره برای **دکتر سینا رضادوست**، دبیر شیمی کنکور مشهد و برند **کاتالیزور**.
+Marketing and course-sales template for **Dr. Sina Rezadoost**, a konkur chemistry
+teacher in Mashhad, under the **Catalyzer** brand.
 
-مرحله‌ی فعلی: صفحه‌ی فرودِ فارسی (RTL) برای پرزنت به کارفرما. در مرحله‌ی بعد به قالب وردپرس + فروشگاه دوره (WooCommerce) منتقل می‌شود.
+Current stage: a Persian (RTL) landing page for the client presentation. The next
+stage moves it to a WordPress theme + course store (WooCommerce).
 
-## فایل‌ها
+## Files
 
-| فایل | توضیح |
+| File | Description |
 | --- | --- |
-| `index.html` | صفحه‌ی اصلی، تک‌فایلِ مستقل. برای دیدن، در مرورگر باز کنید. |
-| `assets/` | عکس دکتر رضادوست و لوگوی کاتالیزور |
-| `catalyzer-preview.html` | نسخه‌ی تک‌فایل با عکس‌های embed‌شده (برای انتشار به‌صورت Artifact) |
-| `build-preview.js` | اسکریپت ساختِ `catalyzer-preview.html` از `index.html` |
-| `vercel.json` | تنظیمات استقرار روی Vercel (سایت استاتیک، بدون build) |
+| `index.html` | Main page, a self-contained single file. Open it in a browser to view. |
+| `assets/` | Photo of Dr. Rezadoost and the Catalyzer logo |
+| `catalyzer-preview.html` | Single-file build with embedded images (for publishing as an Artifact) |
+| `build-preview.js` | Script that builds `catalyzer-preview.html` from `index.html` |
+| `vercel.json` | Vercel deployment config (static site, no build) |
 
-## اجرا
+## Running
 
 ```bash
-# فقط باز کردن index.html در مرورگر کافی است
+# Just open index.html in a browser
 
-# ساخت دوباره‌ی نسخه‌ی preview پس از تغییر index.html
+# Rebuild the preview file after changing index.html
 node build-preview.js
 ```
 
-## استقرار (Vercel)
+## Deployment (Vercel)
 
-سایت کاملاً استاتیک است و نیازی به build ندارد.
+The site is fully static and needs no build step.
 
-1. مخزن گیت‌هاب را روی Vercel ایمپورت کنید (Add New → Project).
-2. Framework Preset: **Other**. مقادیر Build/Output را خالی بگذارید.
-3. Deploy. از این پس هر push روی `main` به‌صورت خودکار منتشر می‌شود.
+1. Import the GitHub repo into Vercel (Add New → Project).
+2. Framework Preset: **Other**. Leave the Build/Output fields empty.
+3. Deploy. Every push to `main` is then published automatically.
 
-`build-preview.js` و `catalyzer-preview.html` از طریق `.vercelignore` از استقرار کنار گذاشته می‌شوند.
+`build-preview.js` and `catalyzer-preview.html` are excluded from the deployment
+via `.vercelignore`.
 
-## طراحی
+## Design
 
-- تم زغالیِ گرم + لهجه‌ی نارنجیِ کهربایی، هماهنگ با لوگوی کاتالیزور
-- فونت‌ها: Vazirmatn + IBM Plex Mono
-- فقط تم تیره، ریسپانسیو، پس‌زمینه‌ی انیمیشنیِ «شبکه‌ی کربنیِ هگزاگونی» روی Canvas
+- Warm charcoal theme + amber accent, matched to the Catalyzer logo
+- Fonts: Vazirmatn + IBM Plex Mono
+- Dark theme only, responsive, animated hexagonal carbon-lattice background on Canvas
 
-## نکات باقی‌مانده تا انتشار نهایی
+## Remaining before final launch
 
-- جایگزینی قیمت‌ها، آمار، لینک ویدیوها و متن نظرات با محتوای واقعی
-- اتصال فرم تماس و سیستم پرداخت روی وردپرس
+- Replace prices, stats, video links, and testimonial text with real content
+- Wire up the contact form and payment system on WordPress
