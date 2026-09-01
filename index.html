@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کاتالیزور — سینا رضادوست</title>
+<meta name="description" content="وب‌سایت رسمی دکتر سینا رضادوست، دبیر شیمی کنکور مشهد و بنیان‌گذار متد کاتالیزور.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* ============================================================
+   کاتالیزور — قالب معرفی و فروش دوره | Design tokens
+   ============================================================ */
+:root{
+  color-scheme: dark;
+  /* warm charcoal drawn from the brand logo */
+  --bg:        #171614;
+  --bg-2:      #1F1D1A;
+  --bg-3:      #292620;
+  --bg-inset:  #131210;
+  --line:      rgba(244,238,229,.10);
+  --line-strong: rgba(244,238,229,.18);
+  --text:      #F3EEE6;
+  --text-dim:  #A79F93;
+  --text-mute: #776F63;
+  /* catalyst amber — the accent from the glasses and the logo tagline */
+  --accent:    #F0821E;
+  --accent-2:  #F6A24B;
+  --accent-deep:#C6620C;
+  --accent-ink:#171614;
+  --glow:      rgba(240,130,30,.16);
+  --shadow:    0 24px 60px -22px rgba(0,0,0,.65);
+  --radius:    14px;
+  --radius-lg: 22px;
+  --maxw:      1140px;
+  --font-display:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  --font-body:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  --font-mono:'IBM Plex Mono','Vazirmatn',ui-monospace,monospace;
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:        #FBFAF7;
+  --bg-2:      #FFFFFF;
+  --bg-3:      #F2EEE6;
+  --bg-inset:  #F4F1EA;
+  --line:      rgba(23,22,20,.12);
+  --line-strong: rgba(23,22,20,.22);
+  --text:      #201E1B;
+  --text-dim:  #675F55;
+  --text-mute: #938A7D;
+  --accent:    #C6620C;
+  --accent-2:  #A8500A;
+  --accent-deep:#8F430A;
+  --accent-ink:#FFFFFF;
+  --glow:      rgba(198,98,12,.12);
+  --shadow:    0 22px 50px -24px rgba(60,40,15,.30);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme: light;
+    --bg:        #FBFAF7;
+    --bg-2:      #FFFFFF;
+    --bg-3:      #F2EEE6;
+    --bg-inset:  #F4F1EA;
+    --line:      rgba(23,22,20,.12);
+    --line-strong: rgba(23,22,20,.22);
+    --text:      #201E1B;
+    --text-dim:  #675F55;
+    --text-mute: #938A7D;
+    --accent:    #C6620C;
+    --accent-2:  #A8500A;
+    --accent-deep:#8F430A;
+    --accent-ink:#FFFFFF;
+    --glow:      rgba(198,98,12,.12);
+    --shadow:    0 22px 50px -24px rgba(60,40,15,.30);
+  }
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  font-weight:400;
+  font-size:clamp(15px,.55vw + 13.5px,16.5px);
+  line-height:1.8;
+  color:var(--text);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+h1,h2,h3,h4{margin:0;font-family:var(--font-display);font-weight:800;line-height:1.35;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+/* ============================================================
+   Layout primitives
+   ============================================================ */
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(20px,5vw,44px)}
+.section{padding-block:clamp(64px,9vw,120px);position:relative}
+.section + .section{border-top:1px solid var(--line)}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--accent);
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 18px;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--accent);opacity:.7}
+.section-head{max-width:640px;margin-bottom:clamp(36px,5vw,60px)}
+.section-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem)}
+.section-head p{margin-top:14px;color:var(--text-dim);font-size:1.03rem}
+.lede{color:var(--text-dim)}
+
+.btn{
+  --bh:52px;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  height:var(--bh);padding-inline:26px;
+  border-radius:999px;border:1px solid transparent;
+  font-family:var(--font-display);font-weight:700;font-size:.98rem;
+  cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease;
+  white-space:nowrap;
+}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 12px 30px -12px var(--glow)}
+.btn-primary:hover{background:var(--accent-2);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.btn-block{width:100%}
+
+/* ============================================================
+   Animated atomic-bond background
+   ============================================================ */
+.bg-net{
+  position:fixed;inset:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;display:block;
+}
+main,.footer{position:relative;z-index:1}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.header{
+  position:sticky;top:0;z-index:60;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:blur(14px) saturate(1.4);
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s ease,background .3s ease;
+}
+.header.scrolled{border-bottom-color:var(--line);background:color-mix(in srgb,var(--bg) 92%,transparent)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:24px;height:70px}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:800}
+.brand .mark{width:34px;height:34px;flex:none}
+.brand .mark .c-stroke{stroke:var(--text)}
+.brand .mark .c-arrow{stroke:var(--accent)}
+.brand-name{font-size:1.14rem;letter-spacing:.02em}
+.brand-sub{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--text-mute);font-weight:400;margin-top:2px}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{
+  padding:9px 14px;border-radius:999px;font-size:.95rem;color:var(--text-dim);
+  transition:color .16s ease,background .16s ease;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--text);background:var(--bg-3)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:42px;height:42px;flex:none;display:grid;place-items:center;
+  border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);
+  cursor:pointer;transition:border-color .16s ease,color .16s ease;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.icon-btn svg{width:18px;height:18px}
+.theme-toggle .moon{display:none}
+:root[data-theme="light"] .theme-toggle .sun{display:none}
+:root[data-theme="light"] .theme-toggle .moon{display:block}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .theme-toggle .sun{display:none}
+  :root:not([data-theme="dark"]) .theme-toggle .moon{display:block}
+}
+.nav-toggle{display:none}
+.nav-cta{display:inline-flex}
+.nav-panel{display:none}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero{position:relative;overflow:hidden;padding-block:clamp(48px,7vw,96px) clamp(56px,8vw,104px)}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-bg::before{
+  content:"";position:absolute;inset:-20% -10% auto auto;width:60vw;height:60vw;
+  background:radial-gradient(circle at 70% 30%,var(--glow),transparent 62%);
+}
+.hero-grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,72px);align-items:center;
+}
+.hero-copy h1{
+  font-size:clamp(2.1rem,5.4vw,3.55rem);
+  font-weight:900;line-height:1.28;
+}
+.hero-copy h1 .hl{color:var(--accent);position:relative;white-space:nowrap}
+.hero-copy .lede{margin-top:22px;font-size:1.08rem;max-width:44ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.hero-trust{
+  display:flex;align-items:center;gap:12px;margin-top:30px;
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;color:var(--text-dim);
+}
+.hero-trust .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow)}
+
+.portrait{position:relative;width:min(420px,86vw);margin-inline:auto}
+.portrait svg{width:100%;height:auto;filter:drop-shadow(0 30px 50px rgba(0,0,0,.4))}
+.hexframe-fill{fill:var(--bg-3)}
+.hexframe-ring{fill:none;stroke:var(--accent);stroke-width:2.5}
+.hexframe-ring.faint{stroke:var(--line-strong);stroke-width:1.5}
+.monogram{fill:var(--text-mute);font-family:var(--font-display);font-weight:800}
+.portrait .tile{
+  position:absolute;inset-block-end:6%;inset-inline-start:-6%;
+  width:104px;background:var(--bg-2);border:1px solid var(--accent);
+  border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);
+}
+.portrait .tile .num{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);display:flex;justify-content:space-between}
+.portrait .tile .sym{font-family:var(--font-display);font-weight:800;font-size:2rem;line-height:1.1;color:var(--text)}
+.portrait .tile .nm{font-size:12px;color:var(--text-dim)}
+
+/* ============================================================
+   Stats strip
+   ============================================================ */
+.stats{background:var(--bg-2);border-block:1px solid var(--line)}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border-inline:1px solid var(--line);padding:0}
+.stat{background:var(--bg-2);padding:clamp(24px,3.5vw,40px) clamp(18px,2.5vw,28px);text-align:center}
+.stat .v{font-family:var(--font-display);font-weight:800;font-size:clamp(1.5rem,3vw,2.15rem);color:var(--accent);font-variant-numeric:tabular-nums}
+.stat .k{margin-top:6px;color:var(--text-dim);font-size:.92rem}
+
+/* ============================================================
+   About + credentials
+   ============================================================ */
+.about-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(32px,5vw,64px);align-items:start}
+.about-copy p + p{margin-top:16px}
+.about-copy .sign{margin-top:24px;font-family:var(--font-display);font-weight:700;color:var(--text)}
+.about-copy .sign span{display:block;font-weight:400;font-size:.9rem;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:.05em;margin-top:4px}
+.creds{display:grid;gap:12px}
+.cred{
+  display:flex;gap:14px;align-items:flex-start;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;transition:border-color .18s ease,transform .18s ease;
+}
+.cred:hover{border-color:var(--line-strong);transform:translateX(-4px)}
+.cred .hx{width:28px;height:28px;flex:none;display:grid;place-items:center;color:var(--accent)}
+.cred .hx svg{width:100%;height:100%}
+.cred p{font-size:.98rem}
+.cred strong{font-weight:700;color:var(--text)}
+
+/* ============================================================
+   Method
+   ============================================================ */
+.method{background:color-mix(in srgb,var(--bg-2) 90%,transparent)}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pillar{
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:28px 26px;position:relative;overflow:hidden;
+}
+.pillar .idx{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:.15em}
+.pillar h3{font-size:1.18rem;margin-top:14px}
+.pillar p{margin-top:10px;color:var(--text-dim);font-size:.96rem}
+.pillar::after{content:"";position:absolute;inset-block-start:0;inset-inline-end:0;width:60px;height:60px;
+  background:radial-gradient(circle at 100% 0,var(--glow),transparent 70%)}
+
+/* ============================================================
+   Courses
+   ============================================================ */
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.course{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:30px 28px;display:flex;flex-direction:column;gap:18px;position:relative;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.course:hover{transform:translateY(-5px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+.course.featured{border-color:var(--accent)}
+.course .badge{
+  position:absolute;inset-block-start:-13px;inset-inline-end:24px;
+  background:var(--accent);color:var(--accent-ink);font-family:var(--font-display);font-weight:700;
+  font-size:.78rem;padding:5px 14px;border-radius:999px;
+}
+.course h3{font-size:1.22rem}
+.course .desc{color:var(--text-mute);font-size:.9rem;margin-top:-8px}
+.price{display:flex;align-items:baseline;gap:8px;font-family:var(--font-display)}
+.price .amt{font-size:1.9rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.price .cur{font-size:.9rem;color:var(--text-dim)}
+.price .old{font-size:.9rem;color:var(--text-mute);text-decoration:line-through}
+.feat{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.feat li{display:flex;gap:10px;align-items:flex-start;font-size:.94rem;color:var(--text-dim)}
+.feat li svg{width:16px;height:16px;flex:none;margin-top:5px;color:var(--accent)}
+.course .btn{margin-top:auto}
+
+/* ============================================================
+   Videos
+   ============================================================ */
+.videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.video{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;transition:border-color .18s ease,transform .18s ease;
+}
+.video:hover{border-color:var(--line-strong);transform:translateY(-4px)}
+.video:hover .thumb .play{background:var(--accent);color:var(--accent-ink);transform:translate(50%,-50%) scale(1.08)}
+.thumb{
+  position:relative;aspect-ratio:16/10;
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,var(--bg-3)),var(--bg-inset));
+  display:grid;place-items:center;overflow:hidden;
+}
+.thumb .rings{position:absolute;inset:0;opacity:.5}
+.thumb .play{
+  position:absolute;inset-block-start:50%;inset-inline-end:50%;transform:translate(50%,-50%);
+  width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--bg) 55%,transparent);color:var(--text);
+  backdrop-filter:blur(4px);transition:all .2s ease;
+}
+.thumb .play svg{width:20px;height:20px;margin-inline-start:2px}
+.thumb .tag{
+  position:absolute;inset-block-start:12px;inset-inline-start:12px;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;
+  background:var(--accent);color:var(--accent-ink);padding:4px 9px;border-radius:6px;font-weight:500;
+}
+.thumb .dur{
+  position:absolute;inset-block-end:12px;inset-inline-start:12px;
+  font-family:var(--font-mono);font-size:11px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);color:var(--text);
+  padding:3px 8px;border-radius:6px;
+}
+.video .meta{padding:16px 18px}
+.video .meta .cat{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.video .meta h3{font-size:1.02rem;margin-top:7px;font-weight:700}
+
+/* ============================================================
+   Testimonials
+   ============================================================ */
+.quotes{background:color-mix(in srgb,var(--bg-2) 90%,transparent)}
+.quotes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.quote{
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:30px 28px;position:relative;
+}
+.quote .qm{font-family:var(--font-display);font-size:3rem;line-height:.6;color:var(--accent);opacity:.5}
+.quote p{margin-top:14px;font-size:1.05rem;line-height:1.9}
+.quote .who{margin-top:18px;font-family:var(--font-mono);font-size:12px;letter-spacing:.05em;color:var(--text-dim)}
+
+/* ============================================================
+   CTA band
+   ============================================================ */
+.cta{background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:var(--accent-ink)}
+.cta .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px}
+.cta h2{font-size:clamp(1.5rem,3.2vw,2.2rem);color:var(--accent-ink);max-width:20ch}
+.cta p{margin-top:8px;color:color-mix(in srgb,var(--accent-ink) 78%,transparent)}
+.cta-actions{display:flex;flex-wrap:wrap;gap:12px}
+.cta .btn-primary{background:var(--accent-ink);color:var(--accent)}
+.cta .btn-primary:hover{background:color-mix(in srgb,var(--accent-ink) 88%,#fff)}
+.cta .btn-ghost{border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);color:var(--accent-ink)}
+.cta .btn-ghost:hover{background:color-mix(in srgb,var(--accent-ink) 12%,transparent);color:var(--accent-ink);border-color:var(--accent-ink)}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,60px);align-items:start}
+.contact-info dl{margin:0;display:grid;gap:20px}
+.contact-info dt{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute)}
+.contact-info dd{margin:6px 0 0;font-size:1.05rem;color:var(--text)}
+.socials{display:flex;gap:12px;margin-top:28px}
+.socials a{
+  width:46px;height:46px;display:grid;place-items:center;border-radius:12px;
+  border:1px solid var(--line-strong);color:var(--text-dim);transition:all .16s ease;
+}
+.socials a:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.socials a svg{width:20px;height:20px}
+form.lead{display:grid;gap:16px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);padding:28px}
+form.lead label{display:grid;gap:7px;font-size:.88rem;color:var(--text-dim)}
+form.lead input,form.lead select,form.lead textarea{
+  font-family:inherit;font-size:.98rem;color:var(--text);
+  background:var(--bg-inset);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  transition:border-color .16s ease;
+}
+form.lead input:focus,form.lead select:focus,form.lead textarea:focus{outline:none;border-color:var(--accent)}
+form.lead textarea{resize:vertical;min-height:96px}
+.form-note{font-size:.82rem;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:.02em}
+.form-ok{
+  background:var(--bg-2);border:1px solid var(--accent);border-radius:var(--radius-lg);
+  padding:32px 28px;text-align:center;
+}
+.form-ok svg{width:44px;height:44px;color:var(--accent);margin-inline:auto}
+.form-ok h3{margin-top:14px;font-size:1.15rem}
+.form-ok p{margin-top:8px;color:var(--text-dim)}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer{background:var(--bg-inset);border-top:1px solid var(--line)}
+.brand-logo{display:inline-flex}
+.brand-logo img{width:110px;height:auto;border-radius:16px;box-shadow:0 0 0 1px var(--line)}
+.footer .wrap{padding-block:44px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+.footer .brand-name{font-size:1rem}
+.footer nav{display:flex;flex-wrap:wrap;gap:18px}
+.footer nav a{font-size:.9rem;color:var(--text-dim)}
+.footer nav a:hover{color:var(--accent)}
+.footer .fine{width:100%;border-top:1px solid var(--line);padding-top:20px;font-size:.82rem;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:.03em;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .stagger > *{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .stagger.in > *{opacity:1;transform:none}
+  .stagger.in > *:nth-child(2){transition-delay:.07s}
+  .stagger.in > *:nth-child(3){transition-delay:.14s}
+  .stagger.in > *:nth-child(4){transition-delay:.21s}
+  .stagger.in > *:nth-child(5){transition-delay:.28s}
+  .stagger.in > *:nth-child(6){transition-delay:.35s}
+  .hero-draw{stroke-dasharray:120;stroke-dashoffset:120;animation:draw 1.4s .3s cubic-bezier(.4,0,.2,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .spin-slow{animation:spin 44s linear infinite;transform-origin:center}
+  @keyframes spin{to{transform:rotate(360deg)}}
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;text-align:right}
+  .portrait{grid-row:1;margin-bottom:8px}
+  .about-grid{grid-template-columns:1fr}
+  .pillars{grid-template-columns:1fr}
+  .courses-grid{grid-template-columns:1fr;max-width:460px;margin-inline:auto}
+  .videos-grid{grid-template-columns:repeat(2,1fr)}
+  .quotes-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .stats .wrap{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .nav-links,.nav-cta{display:none}
+  .nav-toggle{display:grid}
+  .nav-panel{
+    position:absolute;inset-inline:0;inset-block-start:70px;
+    background:var(--bg-2);border-bottom:1px solid var(--line);
+    padding:16px clamp(20px,5vw,44px) 22px;display:none;flex-direction:column;gap:4px;
+  }
+  .nav-panel.open{display:flex}
+  .nav-panel a{padding:12px 6px;border-bottom:1px solid var(--line);color:var(--text-dim)}
+  .nav-panel a:last-of-type{border-bottom:none}
+  .nav-panel .btn{margin-top:12px}
+}
+@media (max-width:520px){
+  .videos-grid{grid-template-columns:1fr}
+  .stats .wrap{grid-template-columns:1fr}
+  .hero-actions .btn{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+
+<canvas class="bg-net" id="bgNet" aria-hidden="true"></canvas>
+
+<!-- ===================== HEADER ===================== -->
+<header class="header" id="top">
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="#top" aria-label="کاتالیزور — خانه">
+        <svg class="mark" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+          <g stroke-linecap="round" stroke-linejoin="round">
+            <path class="c-stroke" d="M40.7 17.5 L26 9 L11.3 17.5 L11.3 34.5 L26 43 L40.7 34.5" stroke-width="4.2"/>
+            <path class="c-stroke" d="M35.1 20.9 L26 15.6 L16.9 20.9 L16.9 31.1 L26 36.4" stroke-width="3.3" opacity="0.85"/>
+            <path class="c-arrow" d="M30 33 H44 M39 27.5 L44.5 33 L39 38.5" stroke-width="4.2"/>
+          </g>
+        </svg>
+        <span>
+          <span class="brand-name">کاتالیزور</span>
+          <span class="brand-sub">SINA REZADOOST</span>
+        </span>
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#about">درباره</a>
+        <a href="#method">متد کاتالیزور</a>
+        <a href="#courses">دوره‌ها</a>
+        <a href="#videos">ویدیوها</a>
+        <a href="#contact">تماس</a>
+      </div>
+
+      <div class="nav-right">
+        <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم روشن و تیره">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+        </button>
+        <a class="btn btn-primary nav-cta" href="#contact">مشاوره و ثبت‌نام</a>
+        <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="منو" aria-expanded="false" aria-controls="navPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+  <div class="nav-panel" id="navPanel">
+    <a href="#about">درباره سینا رضادوست</a>
+    <a href="#method">متد کاتالیزور</a>
+    <a href="#courses">دوره‌ها و پکیج‌ها</a>
+    <a href="#videos">ویدیوهای کلاس</a>
+    <a href="#contact">تماس و مشاوره</a>
+    <a class="btn btn-primary" href="#contact">مشاوره و ثبت‌نام</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">CATALYZER · شیمی کنکور</p>
+        <h1>شیمیِ کنکور را <span class="hl">مثل یک کاتالیزور</span> جلو ببر.</h1>
+        <p class="lede">دکتر سینا رضادوست — دکتر داروساز، مدرس شیمی کنکور مدارس سمپاد و طراح آزمون‌های کشوری. با متد «کاتالیزور»، مفهوم و تست را کنار هم پیش می‌بری و از پراکندگی مطالب شیمی عبور می‌کنی.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#courses">مشاهده‌ی دوره‌ها</a>
+          <a class="btn btn-ghost" href="#videos">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            تماشای نمونه‌ی تدریس
+          </a>
+        </div>
+        <p class="hero-trust"><span class="dot"></span> بیش از ۱۲ سال تدریس تخصصیِ کنکور در مشهد</p>
+      </div>
+
+      <div class="portrait reveal">
+        <svg viewBox="0 0 400 452" role="img" aria-label="دکتر سینا رضادوست">
+          <defs>
+            <clipPath id="hex">
+              <path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z"/>
+            </clipPath>
+            <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--bg-3)"/>
+              <stop offset="1" stop-color="var(--bg-inset)"/>
+            </linearGradient>
+          </defs>
+
+          <g class="spin-slow" opacity="0.5">
+            <path d="M200 -6 L416 118 L416 366 L200 490 L-16 366 L-16 118 Z"
+                  fill="none" stroke="var(--line-strong)" stroke-width="1.4" stroke-dasharray="3 9"/>
+          </g>
+
+          <path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z" class="hexframe-fill"/>
+          <g clip-path="url(#hex)">
+            <rect x="0" y="0" width="400" height="452" fill="url(#mg)"/>
+            <image href="assets/sina-rezadoost.jpg" x="-16" y="0" width="432" height="452" preserveAspectRatio="xMidYMid slice"/>
+          </g>
+          <path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z" class="hexframe-ring"/>
+        </svg>
+
+        <div class="tile" aria-hidden="true">
+          <div class="num"><span>۶</span><span>C</span></div>
+          <div class="sym">C</div>
+          <div class="nm">کربن · کاتالیزور</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STATS ===================== -->
+<section class="stats" aria-label="یک نگاه به کارنامه">
+  <div class="wrap stagger">
+    <div class="stat"><div class="v">+۱۲</div><div class="k">سال تدریس تخصصی کنکور</div></div>
+    <div class="stat"><div class="v">۲،۳،۴،۶،۹</div><div class="k">رتبه‌های برتر کشوری زیر تدریس</div></div>
+    <div class="stat"><div class="v">سمپاد</div><div class="k">تدریس در مدارس تیزهوشان</div></div>
+    <div class="stat"><div class="v">قلم‌چی · خیلی‌سبز</div><div class="k">طراح آزمون‌های کشوری</div></div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p class="eyebrow">درباره‌ی مدرس</p>
+        <h2 style="font-size:clamp(1.7rem,3.4vw,2.5rem)">سینا رضادوست، دبیر شیمی کنکور</h2>
+        <p class="lede" style="margin-top:16px">دکتر سینا رضادوست، دکتر داروساز و دانش‌آموخته‌ی دبیرستان شهید هاشمی‌نژاد ۱ مشهد است. سال‌هاست شیمیِ کنکور را برای داوطلبان تجربی و ریاضی تدریس می‌کند و نامش با رتبه‌های تک‌رقمی کنکور گره خورده است.</p>
+        <p class="lede">تدریس در مدارس سمپاد و طراحی آزمون‌های کشوریِ قلم‌چی و خیلی‌سبز، نگاه او را به بودجه‌بندی و تیپ سؤالات کنکور دقیق کرده است؛ همان چیزی که در کلاس‌ها به دانش‌آموز منتقل می‌شود.</p>
+        <p class="sign">دکتر سینا رضادوست<span>Dr. Sina Rezadoost — Chemistry, Mashhad</span></p>
+      </div>
+
+      <div class="creds reveal">
+        <div class="cred">
+          <span class="hx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7v10l-9 5-9-5V7z"/></svg></span>
+          <p><strong>دکتر داروساز</strong> — تحصیلات دانشگاهی در رشته‌ی داروسازی</p>
+        </div>
+        <div class="cred">
+          <span class="hx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7v10l-9 5-9-5V7z"/></svg></span>
+          <p><strong>مدرس کنکور مدارس سمپاد</strong> — تدریس شیمی در مدارس تیزهوشان</p>
+        </div>
+        <div class="cred">
+          <span class="hx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7v10l-9 5-9-5V7z"/></svg></span>
+          <p><strong>مدرس رتبه‌های ۲، ۳، ۴، ۶، ۹ و ... کنکور</strong> — همراهیِ داوطلبان برتر کشوری</p>
+        </div>
+        <div class="cred">
+          <span class="hx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7v10l-9 5-9-5V7z"/></svg></span>
+          <p><strong>طراح آزمون‌های کشوریِ قلم‌چی و خیلی‌سبز</strong></p>
+        </div>
+        <div class="cred">
+          <span class="hx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 7v10l-9 5-9-5V7z"/></svg></span>
+          <p><strong>دانش‌آموخته‌ی هاشمی‌نژاد ۱ مشهد</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== METHOD ===================== -->
+<section class="section method" id="method">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">چرا کاتالیزور؟</p>
+      <h2>کاتالیزور سرعت واکنش را بالا می‌برد — اینجا هم همین کار را می‌کنیم</h2>
+      <p>سه ستونی که مسیر شیمیِ کنکور را کوتاه‌تر و مطمئن‌تر می‌کند.</p>
+    </div>
+    <div class="pillars stagger">
+      <div class="pillar">
+        <span class="idx">۰۱</span>
+        <h3>مفهوم‌محور، نه حفظِ خشک</h3>
+        <p>هر مبحث از ریشه‌ی مفهومی باز می‌شود تا سؤال‌های ترکیبی و نفس‌گیرِ کنکور برایت قابل حل باشد.</p>
+      </div>
+      <div class="pillar">
+        <span class="idx">۰۲</span>
+        <h3>تست و تکنیکِ زمان</h3>
+        <p>تکنیک‌های حل سریع، تله‌های رایج و مدیریت زمان روی سؤالات واقعیِ کنکور و آزمون‌های کشوری.</p>
+      </div>
+      <div class="pillar">
+        <span class="idx">۰۳</span>
+        <h3>پشتیبانی و آزمونِ منظم</h3>
+        <p>آزمون‌های مبحثی، بازخورد و پیگیری مستمر تا مطمئن شوی مطالب واقعاً تثبیت شده است.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COURSES ===================== -->
+<section class="section" id="courses">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">دوره‌ها و پکیج‌ها</p>
+      <h2>پکیج آموزشیِ متناسب با مسیر خودت را انتخاب کن</h2>
+      <p>ویدیوی کامل کلاس، جزوه و آزمون. پرداخت امن و دسترسی دائمی پس از خرید.</p>
+    </div>
+    <div class="courses-grid stagger">
+
+      <div class="course">
+        <h3>شیمی دوازدهم</h3>
+        <p class="desc">پوشش کامل مباحث پایه‌ی دوازدهم</p>
+        <div class="price"><span class="amt">۱٬۸۵۰٬۰۰۰</span><span class="cur">تومان</span></div>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> حدود ۴۰ ساعت ویدیوی کلاس</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> جزوه‌ی کامل PDF</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> آزمون پایان هر فصل</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#contact">ثبت‌نام</a>
+      </div>
+
+      <div class="course featured">
+        <span class="badge">پرطرفدار</span>
+        <h3>پکیج جامع شیمی کنکور</h3>
+        <p class="desc">دهم + یازدهم + دوازدهم، از صفر تا کنکور</p>
+        <div class="price"><span class="amt">۴٬۹۰۰٬۰۰۰</span><span class="cur">تومان</span><span class="old">۶٬۲۰۰٬۰۰۰</span></div>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> بیش از ۱۲۰ ساعت ویدیوی کلاس</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> جزوه، فلش‌کارت و بانک تست</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> آزمون‌های مبحثی + پشتیبانی</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> دسترسی دائمی و به‌روزرسانی رایگان</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="#contact">ثبت‌نام در پکیج جامع</a>
+      </div>
+
+      <div class="course">
+        <h3>جمع‌بندی و تست‌زنی</h3>
+        <p class="desc">مرور سریع + تکنیک تست برای روزهای پایانی</p>
+        <div class="price"><span class="amt">۹۹۰٬۰۰۰</span><span class="cur">تومان</span></div>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> جمع‌بندی تمام مباحث</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> حل تست‌های کنکورهای اخیر</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg> تکنیک مدیریت زمان</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#contact">ثبت‌نام</a>
+      </div>
+
+    </div>
+    <p class="form-note" style="margin-top:22px;text-align:center">قیمت‌ها و سرفصل‌ها نمونه هستند و پیش از انتشار نهایی توسط شما تنظیم می‌شوند.</p>
+  </div>
+</section>
+
+<!-- ===================== VIDEOS ===================== -->
+<section class="section" id="videos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">ویدیوهای کلاس</p>
+      <h2>نمونه‌ی تدریس و بخشی از جلسات ضبط‌شده</h2>
+      <p>چند دقیقه از کلاس را ببین تا با فضای تدریس آشنا شوی.</p>
+    </div>
+    <div class="videos-grid stagger">
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="tag">نمونه‌ی رایگان</span>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۱۴:۲۰</span>
+        </div>
+        <div class="meta"><span class="cat">دهم · فصل ۱</span><h3>استوکیومتری و مفهوم مول</h3></div>
+      </article>
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۲۱:۰۵</span>
+        </div>
+        <div class="meta"><span class="cat">دهم · فصل ۳</span><h3>ساختار لوویس و هندسه‌ی مولکول</h3></div>
+      </article>
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="tag">نمونه‌ی رایگان</span>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۱۸:۴۷</span>
+        </div>
+        <div class="meta"><span class="cat">یازدهم · فصل ۳</span><h3>تعادل شیمیایی</h3></div>
+      </article>
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۲۵:۱۲</span>
+        </div>
+        <div class="meta"><span class="cat">دوازدهم · فصل ۳</span><h3>اسید و باز و محاسبات pH</h3></div>
+      </article>
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۱۹:۳۳</span>
+        </div>
+        <div class="meta"><span class="cat">دوازدهم · فصل ۴</span><h3>الکتروشیمی و سلول گالوانی</h3></div>
+      </article>
+
+      <article class="video">
+        <div class="thumb">
+          <svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="dur">۲۲:۵۸</span>
+        </div>
+        <div class="meta"><span class="cat">یازدهم · فصل ۱</span><h3>سینتیک شیمیایی</h3></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== QUOTES ===================== -->
+<section class="section quotes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">نظر دانش‌آموزان</p>
+      <h2>حرف‌هایی از داوطلب‌هایی که شیمی را جدی گرفتند</h2>
+    </div>
+    <div class="quotes-grid stagger">
+      <figure class="quote">
+        <div class="qm">”</div>
+        <p>شیمی ضعیف‌ترین درسم بود. با کلاس دکتر رضادوست و متد کاتالیزور، درصدم توی کنکور رفت بالای ۸۰. مفهومی بودنِ تدریس واقعاً فرق داشت.</p>
+        <figcaption class="who">— داوطلب تجربی، کنکور ۱۴۰۳</figcaption>
+      </figure>
+      <figure class="quote">
+        <div class="qm">”</div>
+        <p>جزوه و آزمون‌های مبحثی نمی‌ذاشت مطلبی جا بمونه. سرعت جمع‌بندی‌ام برای شیمی چند برابر شد و با خیال راحت سر جلسه نشستم.</p>
+        <figcaption class="who">— داوطلب ریاضی، رتبه‌ی زیر ۳۰۰ منطقه</figcaption>
+      </figure>
+    </div>
+    <p class="form-note" style="margin-top:22px">نمونه — متن نظرات واقعی جایگزین می‌شود.</p>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="section cta">
+  <div class="wrap">
+    <div>
+      <h2>همین امروز شیمی‌ات را از نقطه‌ضعف به نقطه‌قوت تبدیل کن</h2>
+      <p>برای مشاوره‌ی انتخاب دوره، پیام بده.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn btn-primary" href="#contact">درخواست مشاوره</a>
+      <a class="btn btn-ghost" href="#courses">دیدن دوره‌ها</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <p class="eyebrow">تماس و مشاوره</p>
+        <h2 style="font-size:clamp(1.6rem,3.2vw,2.3rem)">سؤالی داری؟ راه‌های ارتباط با کاتالیزور</h2>
+        <dl style="margin-top:26px">
+          <div><dt>تلگرام پشتیبانی</dt><dd>@catalyzer_support</dd></div>
+          <div><dt>شماره تماس</dt><dd style="direction:ltr;text-align:right">۰۹۱۵ ۰۰۰ ۰۰۰۰</dd></div>
+          <div><dt>محل تدریس</dt><dd>مشهد</dd></div>
+        </dl>
+        <div class="socials">
+          <a href="#" aria-label="تلگرام"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.6 19.8c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-4.9L17 6.3c.4-.3-.1-.5-.6-.2L6.6 12.4l-4.8-1.5C.8 10.6.8 10 2 9.5l18.3-7c.9-.3 1.7.2 1.6 1.8Z"/></svg></a>
+          <a href="#" aria-label="اینستاگرام"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="یوتیوب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7c-.2-.8-.9-1.5-1.7-1.7C19.4 5.2 12 5.2 12 5.2s-7.4 0-8.9.4c-.8.2-1.5.9-1.7 1.7C1 8.8 1 12 1 12s0 3.2.4 4.7c.2.8.9 1.5 1.7 1.7 1.5.4 8.9.4 8.9.4s7.4 0 8.9-.4c.8-.2 1.5-.9 1.7-1.7C23 15.2 23 12 23 12ZM9.8 15.3V8.7l5.7 3.3-5.7 3.3Z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <form class="lead" id="leadForm" novalidate>
+          <label>نام و نام خانوادگی
+            <input type="text" name="name" required autocomplete="name" placeholder="مثلاً علی محمدی">
+          </label>
+          <label>شماره تماس
+            <input type="tel" name="phone" required inputmode="tel" placeholder="۰۹۱۲...">
+          </label>
+          <label>رشته
+            <select name="field">
+              <option>تجربی</option>
+              <option>ریاضی</option>
+              <option>سایر</option>
+            </select>
+          </label>
+          <label>پیام (اختیاری)
+            <textarea name="msg" placeholder="چه دوره‌ای مدنظرت است؟"></textarea>
+          </label>
+          <button class="btn btn-primary btn-block" type="submit">ارسال درخواست مشاوره</button>
+          <p class="form-note">این فرم نمونه است؛ پس از راه‌اندازی روی وردپرس به سیستم پیام‌ها و پرداخت متصل می‌شود.</p>
+        </form>
+        <div class="form-ok" id="leadOk" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+          <h3>درخواستت ثبت شد</h3>
+          <p>به‌زودی از طرف پشتیبانی کاتالیزور با تو تماس می‌گیریم.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="wrap">
+    <a class="brand-logo" href="#top" aria-label="کاتالیزور">
+      <img src="assets/catalyzer-logo.jpg" alt="لوگوی برند کاتالیزور" width="128" height="128">
+    </a>
+    <nav>
+      <a href="#about">درباره</a>
+      <a href="#method">متد کاتالیزور</a>
+      <a href="#courses">دوره‌ها</a>
+      <a href="#videos">ویدیوها</a>
+      <a href="#contact">تماس</a>
+    </nav>
+    <p class="fine">
+      <span>© ۱۴۰۴ کاتالیزور — دکتر سینا رضادوست. تمام حقوق محفوظ است.</span>
+      <span>شتاب‌دهنده‌ی رشد شیمیِ کنکور</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* --- theme toggle (per-viewer, remembered) --- */
+  var root = document.documentElement;
+  try{
+    var saved = localStorage.getItem("catalyzer-theme");
+    if(saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  }catch(e){}
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if(!cur){
+      cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try{ localStorage.setItem("catalyzer-theme", next); }catch(e){}
+  });
+
+  /* --- mobile nav --- */
+  var navToggle = document.getElementById("navToggle");
+  var navPanel = document.getElementById("navPanel");
+  navToggle.addEventListener("click", function(){
+    var open = navPanel.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  navPanel.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){ navPanel.classList.remove("open"); navToggle.setAttribute("aria-expanded","false"); }
+  });
+
+  /* --- header shadow on scroll --- */
+  var header = document.querySelector(".header");
+  var onScroll = function(){ header.classList.toggle("scrolled", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, {passive:true});
+
+  /* --- reveal on scroll --- */
+  var items = document.querySelectorAll(".reveal, .stagger");
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, {threshold:0.12, rootMargin:"0px 0px -8% 0px"});
+    items.forEach(function(el){ io.observe(el); });
+  }else{
+    items.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* --- active nav link --- */
+  var links = Array.prototype.slice.call(document.querySelectorAll("#navLinks a"));
+  var map = {};
+  links.forEach(function(a){
+    var id = a.getAttribute("href").slice(1);
+    var sec = document.getElementById(id);
+    if(sec) map[id] = a;
+  });
+  if("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          links.forEach(function(a){ a.classList.remove("active"); });
+          var a = map[en.target.id];
+          if(a) a.classList.add("active");
+        }
+      });
+    }, {threshold:0.5});
+    Object.keys(map).forEach(function(id){ spy.observe(document.getElementById(id)); });
+  }
+
+  /* --- lead form (demo) --- */
+  var form = document.getElementById("leadForm");
+  var ok = document.getElementById("leadOk");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(!form.name.value.trim() || !form.phone.value.trim()){
+      form.reportValidity && form.reportValidity();
+      return;
+    }
+    form.hidden = true;
+    ok.hidden = false;
+    ok.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+})();
+</script>
+
+<script>
+/* ============================================================
+   Atomic-bond background — atoms drift everywhere and gather
+   into a denser web around the pointer.
+   ============================================================ */
+(function(){
+  "use strict";
+  var canvas = document.getElementById("bgNet");
+  if(!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext("2d");
+
+  var rmq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var W = 0, H = 0, DPR = 1, raf = 0, running = false;
+  var atoms = [], prox = [];
+  var pointer = { x: -9999, y: -9999, s: 0, ts: 0 };
+  var rgb = [240, 130, 30];
+
+  var LINK_BASE = 132;   // bond reach for the always-on network
+  var LINK_NEAR = 212;   // bond reach right under the pointer
+  var INFL      = 232;   // pointer influence radius
+
+  function readColor(){
+    var v = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+    var hex = v.match(/^#?([0-9a-fA-F]{6})$/);
+    if(hex){
+      var n = parseInt(hex[1], 16);
+      rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+      return;
+    }
+    var fn = v.match(/rgba?\(([^)]+)\)/);
+    if(fn){
+      var p = fn[1].split(",").map(parseFloat);
+      rgb = [p[0] || 240, p[1] || 130, p[2] || 30];
+    }
+  }
+
+  function build(){
+    var count = Math.max(44, Math.min(124, Math.round(W * H / 12500)));
+    atoms = [];
+    for(var i = 0; i < count; i++){
+      atoms.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.26,
+        vy: (Math.random() - 0.5) * 0.26,
+        r: 0.9 + Math.random() * 1.7
+      });
+    }
+    prox = new Array(atoms.length).fill(0);
+  }
+
+  function resize(){
+    DPR = Math.min(1.75, window.devicePixelRatio || 1);
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    build();
+    if(!running) drawStatic();
+  }
+
+  function step(){
+    var i, a;
+    pointer.ts *= 0.99;                     // a resting pointer slowly relaxes
+    pointer.s += (pointer.ts - pointer.s) * 0.06;
+
+    for(i = 0; i < atoms.length; i++){
+      a = atoms[i];
+      a.x += a.vx; a.y += a.vy;
+
+      if(pointer.s > 0.01){
+        var dx = pointer.x - a.x, dy = pointer.y - a.y;
+        var d = Math.sqrt(dx * dx + dy * dy) || 0.001;
+        if(d < INFL){
+          var f = (1 - d / INFL) * pointer.s;
+          a.vx += (dx / d) * f * 0.055;      // pull toward the pointer
+          a.vy += (dy / d) * f * 0.055;
+          if(d < 62){                        // keep a small clearing right at the tip
+            var push = (1 - d / 62) * 0.16;
+            a.vx -= (dx / d) * push;
+            a.vy -= (dy / d) * push;
+          }
+        }
+      }
+
+      a.vx += (Math.random() - 0.5) * 0.012; // gentle wander
+      a.vy += (Math.random() - 0.5) * 0.012;
+      a.vx *= 0.985; a.vy *= 0.985;
+      var sp = Math.sqrt(a.vx * a.vx + a.vy * a.vy);
+      if(sp > 0.9){ a.vx = a.vx / sp * 0.9; a.vy = a.vy / sp * 0.9; }
+
+      if(a.x < -24){ a.x = -24; a.vx = Math.abs(a.vx); }
+      else if(a.x > W + 24){ a.x = W + 24; a.vx = -Math.abs(a.vx); }
+      if(a.y < -24){ a.y = -24; a.vy = Math.abs(a.vy); }
+      else if(a.y > H + 24){ a.y = H + 24; a.vy = -Math.abs(a.vy); }
+
+      if(pointer.s > 0.01){
+        var pdx = pointer.x - a.x, pdy = pointer.y - a.y;
+        var pd = Math.sqrt(pdx * pdx + pdy * pdy);
+        prox[i] = pd < INFL ? (1 - pd / INFL) * pointer.s : 0;
+      } else {
+        prox[i] = 0;
+      }
+    }
+  }
+
+  function render(){
+    ctx.clearRect(0, 0, W, H);
+    var i, j;
+    for(i = 0; i < atoms.length; i++){
+      var a = atoms[i], pa = prox[i];
+      for(j = i + 1; j < atoms.length; j++){
+        var b = atoms[j];
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var near = pa > prox[j] ? pa : prox[j];
+        var maxD = LINK_BASE + (LINK_NEAR - LINK_BASE) * near;
+        if(dist < maxD){
+          var t = 1 - dist / maxD;
+          var alpha = (0.15 + 0.42 * near) * t;
+          ctx.strokeStyle = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + alpha.toFixed(3) + ")";
+          ctx.lineWidth = 0.7 + near * 0.8;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      var g = 0.32 + 0.55 * pa;
+      ctx.fillStyle = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + g.toFixed(3) + ")";
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, a.r + pa * 1.7, 0, 6.2831853);
+      ctx.fill();
+    }
+  }
+
+  function loop(){
+    step();
+    render();
+    raf = requestAnimationFrame(loop);
+  }
+
+  function drawStatic(){
+    for(var i = 0; i < atoms.length; i++) prox[i] = 0;
+    pointer.s = 0;
+    render();
+  }
+
+  function start(){
+    if(running) return;
+    running = true;
+    raf = requestAnimationFrame(loop);
+  }
+  function stop(){
+    running = false;
+    cancelAnimationFrame(raf);
+  }
+
+  readColor();
+  resize();
+
+  if(rmq.matches){
+    drawStatic();
+  } else {
+    start();
+    window.addEventListener("pointermove", function(e){
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.ts = 1;
+    }, { passive: true });
+    document.addEventListener("pointerleave", function(){ pointer.ts = 0; });
+    window.addEventListener("blur", function(){ pointer.ts = 0; });
+    document.addEventListener("visibilitychange", function(){
+      if(document.hidden) stop();
+      else start();
+    });
+  }
+
+  var rt;
+  window.addEventListener("resize", function(){
+    clearTimeout(rt);
+    rt = setTimeout(resize, 200);
+  });
+
+  var onScheme = function(){ readColor(); if(!running) drawStatic(); };
+  var smq = window.matchMedia("(prefers-color-scheme: dark)");
+  (smq.addEventListener ? smq.addEventListener.bind(smq, "change") : smq.addListener.bind(smq))(onScheme);
+  new MutationObserver(onScheme).observe(document.documentElement, {
+    attributes: true, attributeFilter: ["data-theme"]
+  });
+  (rmq.addEventListener ? rmq.addEventListener.bind(rmq, "change") : rmq.addListener.bind(rmq))(function(){
+    if(rmq.matches){ stop(); drawStatic(); } else { start(); }
+  });
+})();
+</script>
+</body>
+</html>
