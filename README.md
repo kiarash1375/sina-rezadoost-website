@@ -12,6 +12,7 @@
 | `assets/` | عکس دکتر رضادوست و لوگوی کاتالیزور |
 | `catalyzer-preview.html` | نسخه‌ی تک‌فایل با عکس‌های embed‌شده (برای انتشار به‌صورت Artifact) |
 | `build-preview.js` | اسکریپت ساختِ `catalyzer-preview.html` از `index.html` |
+| `vercel.json` | تنظیمات استقرار روی Vercel (سایت استاتیک، بدون build) |
 
 ## اجرا
 
@@ -22,11 +23,21 @@
 node build-preview.js
 ```
 
+## استقرار (Vercel)
+
+سایت کاملاً استاتیک است و نیازی به build ندارد.
+
+1. مخزن گیت‌هاب را روی Vercel ایمپورت کنید (Add New → Project).
+2. Framework Preset: **Other**. مقادیر Build/Output را خالی بگذارید.
+3. Deploy. از این پس هر push روی `main` به‌صورت خودکار منتشر می‌شود.
+
+`build-preview.js` و `catalyzer-preview.html` از طریق `.vercelignore` از استقرار کنار گذاشته می‌شوند.
+
 ## طراحی
 
 - تم زغالیِ گرم + لهجه‌ی نارنجیِ کهربایی، هماهنگ با لوگوی کاتالیزور
 - فونت‌ها: Vazirmatn + IBM Plex Mono
-- تم روشن/تیره، ریسپانسیو، پس‌زمینه‌ی انیمیشنیِ «پیوندهای اتمی» روی Canvas
+- فقط تم تیره، ریسپانسیو، پس‌زمینه‌ی انیمیشنیِ «شبکه‌ی کربنیِ هگزاگونی» روی Canvas
 
 ## نکات باقی‌مانده تا انتشار نهایی
 
