@@ -56,15 +56,14 @@ and makes every part editable in WordPress:
 - **WooCommerce**: each course links to a product / checkout page; the shop
   inherits the theme styling.
 - `single` / `archive` / `search` / `404` / `page` templates plus dedicated
-  course and lesson templates; RTL-first; light/dark tokens.
+  course and lesson templates; RTL-first; dark theme; graphene-lattice background.
+
+The theme's CSS/JS track `index.html` — same dark palette, wide-display layout and
+carbon-lattice background. WordPress is the intended production target.
 
 Install: copy `theme/catalyzer/` into `wp-content/themes/` and activate, or zip it
 and upload from the dashboard. Full guide in
 [`INSTALL-WORDPRESS.md`](INSTALL-WORDPRESS.md).
-
-> Note: the theme's CSS/JS were ported from an earlier revision of `index.html`.
-> If the static prototype's look changes (background, layout, theme), re-sync
-> `theme/catalyzer/assets/`.
 
 ## Design
 

@@ -2,24 +2,6 @@
 (function () {
   "use strict";
 
-  /* --- theme toggle (per-viewer, remembered) --- */
-  var root = document.documentElement;
-  try {
-    var saved = localStorage.getItem("catalyzer-theme");
-    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
-  } catch (e) {}
-
-  var toggle = document.getElementById("themeToggle");
-  if (toggle) {
-    toggle.addEventListener("click", function () {
-      var cur = root.getAttribute("data-theme");
-      if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      var next = cur === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("catalyzer-theme", next); } catch (e) {}
-    });
-  }
-
   /* --- mobile nav --- */
   var navToggle = document.getElementById("navToggle");
   var navPanel = document.getElementById("navPanel");

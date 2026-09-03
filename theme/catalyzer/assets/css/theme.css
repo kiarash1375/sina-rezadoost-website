@@ -1,8 +1,9 @@
 /* ============================================================
-   کاتالیزور — قالب وردپرس | Design tokens
+   کاتالیزور — قالب وردپرس | Design tokens (تم تیره)
    ============================================================ */
 :root{
   color-scheme: dark;
+  /* warm charcoal drawn from the brand logo */
   --bg:        #171614;
   --bg-2:      #1F1D1A;
   --bg-3:      #292620;
@@ -12,6 +13,7 @@
   --text:      #F3EEE6;
   --text-dim:  #A79F93;
   --text-mute: #776F63;
+  /* catalyst amber — the accent from the glasses and the logo tagline */
   --accent:    #F0821E;
   --accent-2:  #F6A24B;
   --accent-deep:#C6620C;
@@ -20,49 +22,15 @@
   --shadow:    0 24px 60px -22px rgba(0,0,0,.65);
   --radius:    14px;
   --radius-lg: 22px;
-  --maxw:      1140px;
+  --maxw:      1240px;
   --font-display:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
   --font-body:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
   --font-mono:'IBM Plex Mono','Vazirmatn',ui-monospace,monospace;
 }
-:root[data-theme="light"]{
-  color-scheme: light;
-  --bg:        #FBFAF7;
-  --bg-2:      #FFFFFF;
-  --bg-3:      #F2EEE6;
-  --bg-inset:  #F4F1EA;
-  --line:      rgba(23,22,20,.12);
-  --line-strong: rgba(23,22,20,.22);
-  --text:      #201E1B;
-  --text-dim:  #675F55;
-  --text-mute: #938A7D;
-  --accent:    #C6620C;
-  --accent-2:  #A8500A;
-  --accent-deep:#8F430A;
-  --accent-ink:#FFFFFF;
-  --glow:      rgba(198,98,12,.12);
-  --shadow:    0 22px 50px -24px rgba(60,40,15,.30);
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    color-scheme: light;
-    --bg:        #FBFAF7;
-    --bg-2:      #FFFFFF;
-    --bg-3:      #F2EEE6;
-    --bg-inset:  #F4F1EA;
-    --line:      rgba(23,22,20,.12);
-    --line-strong: rgba(23,22,20,.22);
-    --text:      #201E1B;
-    --text-dim:  #675F55;
-    --text-mute: #938A7D;
-    --accent:    #C6620C;
-    --accent-2:  #A8500A;
-    --accent-deep:#8F430A;
-    --accent-ink:#FFFFFF;
-    --glow:      rgba(198,98,12,.12);
-    --shadow:    0 22px 50px -24px rgba(60,40,15,.30);
-  }
-}
+/* widen the content column on large / ultra-wide displays */
+@media (min-width:1500px){ :root{ --maxw:1400px; } }
+@media (min-width:1800px){ :root{ --maxw:1560px; } }
+@media (min-width:2100px){ :root{ --maxw:1720px; } }
 
 /* ============================================================
    Reset & base
@@ -134,7 +102,7 @@ p{margin:0}
 .btn-block{width:100%}
 
 /* ============================================================
-   Animated atomic-bond background
+   Animated carbon-lattice background
    ============================================================ */
 .bg-net{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 .site-main,.site-footer{position:relative;z-index:1}
@@ -177,13 +145,6 @@ p{margin:0}
 }
 .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
 .icon-btn svg{width:18px;height:18px}
-.theme-toggle .moon{display:none}
-:root[data-theme="light"] .theme-toggle .sun{display:none}
-:root[data-theme="light"] .theme-toggle .moon{display:block}
-@media (prefers-color-scheme:light){
-  :root:not([data-theme="dark"]) .theme-toggle .sun{display:none}
-  :root:not([data-theme="dark"]) .theme-toggle .moon{display:block}
-}
 .nav-toggle{display:none}
 .nav-cta{display:inline-flex}
 .nav-panel{display:none;list-style:none}

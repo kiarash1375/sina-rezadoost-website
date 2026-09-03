@@ -41,12 +41,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php catalyzer_nav_menu( 'nav-links', false ); ?>
 
 			<div class="nav-right">
-				<button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="<?php esc_attr_e( 'تغییر تم روشن و تیره', 'catalyzer' ); ?>">
-					<?php
-					echo catalyzer_icon( 'sun' ); // phpcs:ignore WordPress.Security.EscapeOutput
-					echo catalyzer_icon( 'moon' ); // phpcs:ignore WordPress.Security.EscapeOutput
-					?>
-				</button>
 				<a class="btn btn-primary nav-cta" href="<?php echo esc_url( catalyzer_anchor_url( catalyzer_opt( 'nav_cta_url', '#contact' ) ) ); ?>">
 					<?php echo esc_html( catalyzer_opt( 'nav_cta_text', 'مشاوره و ثبت‌نام' ) ); ?>
 				</a>
