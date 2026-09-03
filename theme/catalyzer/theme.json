@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 2,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "760px",
+      "wideSize": "1140px"
+    },
+    "color": {
+      "custom": true,
+      "customGradient": true,
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "bg", "color": "#171614", "name": "زغالی" },
+        { "slug": "surface", "color": "#1F1D1A", "name": "سطح" },
+        { "slug": "text", "color": "#F3EEE6", "name": "متن روشن" },
+        { "slug": "text-dim", "color": "#A79F93", "name": "متن کم‌رنگ" },
+        { "slug": "accent", "color": "#F0821E", "name": "کهربایی" },
+        { "slug": "accent-deep", "color": "#C6620C", "name": "کهربایی تیره" }
+      ]
+    },
+    "typography": {
+      "customFontSize": true,
+      "lineHeight": true,
+      "fontFamilies": [
+        {
+          "fontFamily": "'Vazirmatn','Segoe UI',Tahoma,sans-serif",
+          "slug": "body",
+          "name": "وزیرمتن"
+        },
+        {
+          "fontFamily": "'IBM Plex Mono','Vazirmatn',ui-monospace,monospace",
+          "slug": "mono",
+          "name": "مونو"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "small", "size": "0.9rem", "name": "کوچک" },
+        { "slug": "medium", "size": "1.05rem", "name": "متوسط" },
+        { "slug": "large", "size": "1.4rem", "name": "بزرگ" },
+        { "slug": "x-large", "size": "2rem", "name": "خیلی بزرگ" }
+      ]
+    },
+    "spacing": {
+      "units": [ "px", "rem", "em", "%", "vw" ]
+    }
+  }
+}

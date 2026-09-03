@@ -1,0 +1,29 @@
+/* استایل ویرایشگر بلوک — هماهنگ با تم کاتالیزور (تیره) */
+:root{
+  --bg:#171614;--bg-2:#1F1D1A;--text:#F3EEE6;--text-dim:#A79F93;--accent:#F0821E;--line:rgba(244,238,229,.12);
+}
+.editor-styles-wrapper{
+  background:var(--bg-2);
+  color:var(--text);
+  font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  direction:rtl;
+  line-height:1.8;
+}
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4{
+  font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  font-weight:800;
+  color:var(--text);
+}
+.editor-styles-wrapper a{color:var(--accent)}
+.editor-styles-wrapper blockquote{
+  border-inline-start:3px solid var(--accent);
+  padding-inline-start:16px;color:var(--text-dim);
+}
+.editor-styles-wrapper code,
+.editor-styles-wrapper pre{
+  font-family:'IBM Plex Mono','Vazirmatn',monospace;
+  background:var(--bg);border:1px solid var(--line);border-radius:8px;
+}

@@ -1,0 +1,144 @@
+<?php
+/**
+ * قالب کاتالیزور — بوت‌استرپ
+ *
+ * @package Catalyzer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'CATALYZER_VERSION', '1.0.0' );
+define( 'CATALYZER_DIR', get_template_directory() );
+define( 'CATALYZER_URI', get_template_directory_uri() );
+
+/**
+ * راه‌اندازی امکانات قالب.
+ */
+function catalyzer_setup() {
+	load_theme_textdomain( 'catalyzer', CATALYZER_DIR . '/languages' );
+
+	add_theme_support( 'automatic-feed-links' );
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script', 'navigation-widgets' ) );
+	add_theme_support( 'custom-logo', array(
+		'height'      => 76,
+		'width'       => 260,
+		'flex-height' => true,
+		'flex-width'  => true,
+	) );
+	add_theme_support( 'align-wide' );
+	add_theme_support( 'responsive-embeds' );
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'assets/css/editor.css' );
+	add_theme_support( 'woocommerce' );
+	add_theme_support( 'wc-product-gallery-zoom' );
+	add_theme_support( 'wc-product-gallery-lightbox' );
+	add_theme_support( 'wc-product-gallery-slider' );
+
+	register_nav_menus( array(
+		'primary' => __( 'منوی اصلی (هدر)', 'catalyzer' ),
+		'footer'  => __( 'منوی فوتر', 'catalyzer' ),
+	) );
+
+	add_image_size( 'catalyzer-card', 720, 450, true );
+
+	// اپارات را به‌عنوان ارائه‌دهنده‌ی oEmbed اضافه می‌کنیم تا آدرس ویدیوها خودکار جاسازی شود.
+	wp_oembed_add_provider( '#https?://(www\.)?aparat\.com/v/.*#i', 'https://www.aparat.com/oembed', true );
+}
+add_action( 'after_setup_theme', 'catalyzer_setup' );
+
+/**
+ * عرض محتوای اصلی.
+ */
+function catalyzer_content_width() {
+	$GLOBALS['content_width'] = 1140;
+}
+add_action( 'after_setup_theme', 'catalyzer_content_width', 0 );
+
+/**
+ * بارگذاری استایل و اسکریپت‌ها.
+ */
+function catalyzer_assets() {
+	wp_enqueue_style(
+		'catalyzer-fonts',
+		'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap',
+		array(),
+		null
+	);
+
+	$css_path = CATALYZER_DIR . '/assets/css/theme.css';
+	wp_enqueue_style(
+		'catalyzer',
+		CATALYZER_URI . '/assets/css/theme.css',
+		array( 'catalyzer-fonts' ),
+		file_exists( $css_path ) ? filemtime( $css_path ) : CATALYZER_VERSION
+	);
+
+	$bg_path = CATALYZER_DIR . '/assets/js/atomic-bg.js';
+	wp_enqueue_script(
+		'catalyzer-bg',
+		CATALYZER_URI . '/assets/js/atomic-bg.js',
+		array(),
+		file_exists( $bg_path ) ? filemtime( $bg_path ) : CATALYZER_VERSION,
+		true
+	);
+
+	$site_path = CATALYZER_DIR . '/assets/js/site.js';
+	wp_enqueue_script(
+		'catalyzer-site',
+		CATALYZER_URI . '/assets/js/site.js',
+		array(),
+		file_exists( $site_path ) ? filemtime( $site_path ) : CATALYZER_VERSION,
+		true
+	);
+
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'catalyzer_assets' );
+
+/**
+ * فونت‌ها را در ویرایشگر بلوک هم بارگذاری کن.
+ */
+function catalyzer_editor_assets() {
+	wp_enqueue_style(
+		'catalyzer-editor-fonts',
+		'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap',
+		array(),
+		null
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'catalyzer_editor_assets' );
+
+/**
+ * کلاس‌های بدنه.
+ */
+function catalyzer_body_classes( $classes ) {
+	if ( ! is_singular() ) {
+		$classes[] = 'hfeed';
+	}
+	if ( is_front_page() ) {
+		$classes[] = 'catalyzer-landing';
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'catalyzer_body_classes' );
+
+/**
+ * طول خلاصه و ادامه‌ی مطلب.
+ */
+add_filter( 'excerpt_length', function () { return 24; } );
+add_filter( 'excerpt_more', function () { return '&hellip;'; } );
+
+require CATALYZER_DIR . '/inc/template-helpers.php';
+require CATALYZER_DIR . '/inc/post-types.php';
+require CATALYZER_DIR . '/inc/customizer.php';
+require CATALYZER_DIR . '/inc/contact.php';
+
+if ( class_exists( 'WooCommerce' ) ) {
+	require CATALYZER_DIR . '/inc/woocommerce.php';
+}
