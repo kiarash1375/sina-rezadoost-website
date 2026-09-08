@@ -97,6 +97,7 @@ function catalyzer_customize_register( $wp ) {
 		'method'       => 'متد کاتالیزور',
 		'courses'      => 'دوره‌ها',
 		'videos'       => 'ویدیوهای کلاس',
+		'success'      => 'ویدیوهای رتبه‌برترها',
 		'testimonials' => 'نظرات دانش‌آموزان',
 		'cta'          => 'بنر فراخوان',
 		'contact'      => 'تماس',
@@ -184,6 +185,21 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_videos', 'videos_count', 'تعداد ویدیو در صفحه‌ی اصلی', array( 'default' => '6' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_videos', 'videos_more_text', 'دکمه‌ی «همه‌ی ویدیوها» — متن', array( 'default' => 'همه‌ی ویدیوها' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_videos', 'videos_more_url', 'دکمه‌ی «همه‌ی ویدیوها» — لینک', array( 'default' => '' ) );
+
+	/* ---------- رتبه‌برترها ---------- */
+	$add_section( 'catalyzer_success', 'ویدیوهای رتبه‌برترها (سربرگ بخش)', 75 );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_eyebrow', 'برچسب کوچک', array( 'default' => 'رتبه‌های برتر' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_heading', 'تیتر', array( 'default' => 'یک دقیقه با رتبه‌برترهایی که شاگرد کاتالیزور بودند' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_intro', 'توضیح کوتاه', array( 'default' => 'ویدیوهای کوتاه و بدون تعارف از داوطلب‌هایی که با همین متد به رتبه‌های برتر کشوری رسیدند.' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_count', 'تعداد ویدیو در صفحه‌ی اصلی', array( 'default' => '6' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_more_text', 'دکمه‌ی «همه‌ی ویدیوها» — متن', array( 'default' => 'همه‌ی رتبه‌برترها' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_success', 'success_more_url', 'دکمه‌ی «همه‌ی ویدیوها» — لینک', array( 'default' => '' ) );
+
+	/* ---------- حساب کاربری ---------- */
+	$add_section( 'catalyzer_account', 'ورود و حساب کاربری', 78 );
+	catalyzer_cz_field( $wp, 'catalyzer_account', 'show_account_btn', 'نمایش دکمه‌ی ورود در هدر', array( 'type' => 'checkbox', 'default' => true ) );
+	catalyzer_cz_field( $wp, 'catalyzer_account', 'login_btn_text', 'متن دکمه (کاربر واردنشده)', array( 'default' => 'ورود / ثبت‌نام' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_account', 'account_btn_text', 'متن دکمه (کاربر واردشده)', array( 'default' => 'پنل کاربری' ) );
 
 	/* ---------- نظرات ---------- */
 	$add_section( 'catalyzer_testimonials', 'نظرات (سربرگ بخش)', 80 );

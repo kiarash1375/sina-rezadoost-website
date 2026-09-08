@@ -72,6 +72,27 @@ function catalyzer_register_post_types() {
 		'show_in_rest'  => true,
 	) );
 
+	register_post_type( 'success_video', array(
+		'labels'        => array(
+			'name'          => 'ویدیوهای رتبه‌برترها',
+			'singular_name' => 'ویدیوی رتبه‌برتر',
+			'add_new'       => 'افزودن ویدیو',
+			'add_new_item'  => 'افزودن ویدیوی جدید',
+			'edit_item'     => 'ویرایش ویدیو',
+			'view_item'     => 'مشاهده‌ی ویدیو',
+			'search_items'  => 'جستجوی ویدیو',
+			'not_found'     => 'ویدیویی یافت نشد',
+			'menu_name'     => 'رتبه‌برترها',
+		),
+		'public'        => true,
+		'has_archive'   => true,
+		'menu_icon'     => 'dashicons-awards',
+		'menu_position' => 22,
+		'rewrite'       => array( 'slug' => 'success-stories', 'with_front' => false ),
+		'supports'      => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
+		'show_in_rest'  => true,
+	) );
+
 	register_post_type( 'catalyzer_lead', array(
 		'labels'        => array(
 			'name'          => 'درخواست‌های مشاوره',
@@ -90,6 +111,21 @@ function catalyzer_register_post_types() {
 	) );
 }
 add_action( 'init', 'catalyzer_register_post_types' );
+
+/**
+ * برای نوع‌های محتوای این قالب از ویرایشگر کلاسیک استفاده می‌شود.
+ *
+ * این محتواها فقط «عنوان + فیلدهای مشخصات + تصویر شاخص» هستند و ویرایشگر بلوکی
+ * چیزی به آن‌ها اضافه نمی‌کند؛ در عوض کلاسیک سبک‌تر است و به بارگذاری کامل
+ * بسته‌های جاوااسکریپت ویرایشگر بلوکی وابسته نیست.
+ */
+function catalyzer_use_classic_editor( $use_block, $post_type ) {
+	if ( in_array( $post_type, array( 'course', 'lesson', 'success_video', 'testimonial', 'catalyzer_lead' ), true ) ) {
+		return false;
+	}
+	return $use_block;
+}
+add_filter( 'use_block_editor_for_post_type', 'catalyzer_use_classic_editor', 10, 2 );
 
 /**
  * تعریف فیلدهای متا.
@@ -119,6 +155,18 @@ function catalyzer_meta_fields() {
 				'_cat_duration'  => array( 'label' => 'مدت زمان (مثلاً ۱۴:۲۰)', 'type' => 'text' ),
 				'_cat_category'  => array( 'label' => 'برچسب دسته (مثلاً «دوازدهم · فصل ۳»)', 'type' => 'text' ),
 				'_cat_free'      => array( 'label' => 'نمونه‌ی رایگان', 'type' => 'checkbox' ),
+			),
+		),
+		'success_video' => array(
+			'title'  => 'مشخصات ویدیوی رتبه‌برتر',
+			'note'   => 'عنوانِ نوشته = نام دانش‌آموز. متنِ نوشته = توضیح کوتاه (اختیاری). تصویر شاخص = بندانگشتیِ ویدیو.',
+			'fields' => array(
+				'_cat_sv_url'      => array( 'label' => 'آدرس ویدیو (یوتیوب / اپارات / mp4)', 'type' => 'text' ),
+				'_cat_sv_rank'     => array( 'label' => 'رتبه‌ی کنکور (مثلاً ۳ کشوری)', 'type' => 'text' ),
+				'_cat_sv_field'    => array( 'label' => 'رشته (مثلاً تجربی)', 'type' => 'text' ),
+				'_cat_sv_year'     => array( 'label' => 'سال کنکور (مثلاً ۱۴۰۳)', 'type' => 'text' ),
+				'_cat_sv_duration' => array( 'label' => 'مدت زمان (مثلاً ۰:۵۸)', 'type' => 'text' ),
+				'_cat_sv_quote'    => array( 'label' => 'جمله‌ی کوتاه زیر کارت', 'type' => 'textarea' ),
 			),
 		),
 		'testimonial' => array(
@@ -221,7 +269,7 @@ function catalyzer_save_meta( $post_id ) {
 		$raw = wp_unslash( $_POST[ $key ] );
 		if ( 'textarea' === $field['type'] ) {
 			update_post_meta( $post_id, $key, sanitize_textarea_field( $raw ) );
-		} elseif ( '_cat_btn_url' === $key || '_cat_video_url' === $key ) {
+		} elseif ( '_cat_btn_url' === $key || '_cat_video_url' === $key || '_cat_sv_url' === $key ) {
 			update_post_meta( $post_id, $key, esc_url_raw( trim( $raw ) ) );
 		} else {
 			update_post_meta( $post_id, $key, sanitize_text_field( $raw ) );
