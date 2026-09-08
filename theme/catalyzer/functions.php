@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.1.0' );
+define( 'CATALYZER_VERSION', '1.2.1' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -134,10 +134,30 @@ add_filter( 'body_class', 'catalyzer_body_classes' );
 add_filter( 'excerpt_length', function () { return 24; } );
 add_filter( 'excerpt_more', function () { return '&hellip;'; } );
 
+/**
+ * کارهای یک‌بار پس از به‌روزرسانی قالب: ثبت مسیرها و ساخت صفحه‌ی حساب کاربری.
+ */
+function catalyzer_maybe_upgrade() {
+	if ( get_option( 'catalyzer_theme_version' ) === CATALYZER_VERSION ) {
+		return;
+	}
+	if ( function_exists( 'catalyzer_register_post_types' ) ) {
+		catalyzer_register_post_types();
+	}
+	flush_rewrite_rules();
+	if ( function_exists( 'catalyzer_ensure_account_page' ) ) {
+		catalyzer_ensure_account_page();
+	}
+	update_option( 'catalyzer_theme_version', CATALYZER_VERSION );
+}
+add_action( 'admin_init', 'catalyzer_maybe_upgrade', 5 );
+
 require CATALYZER_DIR . '/inc/template-helpers.php';
 require CATALYZER_DIR . '/inc/post-types.php';
 require CATALYZER_DIR . '/inc/customizer.php';
 require CATALYZER_DIR . '/inc/contact.php';
+require CATALYZER_DIR . '/inc/auth.php';
+require CATALYZER_DIR . '/inc/demo-content.php';
 
 if ( class_exists( 'WooCommerce' ) ) {
 	require CATALYZER_DIR . '/inc/woocommerce.php';

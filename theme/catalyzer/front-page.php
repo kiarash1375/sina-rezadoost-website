@@ -28,6 +28,9 @@ if ( catalyzer_section_enabled( 'courses' ) ) {
 if ( catalyzer_section_enabled( 'videos' ) ) {
 	get_template_part( 'template-parts/videos' );
 }
+if ( catalyzer_section_enabled( 'success' ) ) {
+	get_template_part( 'template-parts/success-videos' );
+}
 if ( catalyzer_section_enabled( 'testimonials' ) ) {
 	get_template_part( 'template-parts/testimonials' );
 }
