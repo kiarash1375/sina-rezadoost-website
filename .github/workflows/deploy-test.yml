@@ -1,0 +1,37 @@
+name: Deploy theme to test.rezadoost.com
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "theme/catalyzer/**"
+      - ".github/workflows/deploy-test.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: FTP deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Upload theme/catalyzer to the test site
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./theme/catalyzer/
+          server-dir: ${{ secrets.FTP_THEME_DIR }}
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
