@@ -508,3 +508,117 @@ form.lead textarea{resize:vertical;min-height:96px}
   .stats .wrap,.stats .wrap[data-cols]{grid-template-columns:1fr}
   .hero-actions .btn{flex:1 1 100%}
 }
+
+/* ============================================================
+   Top-student video testimonials
+   ============================================================ */
+.sv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sv-card{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;text-align:start;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.sv-card:hover,.sv-card:focus-visible{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+.sv-card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.sv-thumb{
+  position:relative;aspect-ratio:16/10;background:var(--bg-inset);
+  border-bottom:1px solid var(--line);overflow:hidden;
+}
+.sv-thumb > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sv-thumb .rings{position:absolute;inset:0;opacity:.5}
+.sv-thumb .play{
+  position:absolute;top:50%;inset-inline-end:50%;transform:translate(50%,-50%);
+  width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(23,22,20,.72);border:1px solid var(--line-strong);color:var(--text);
+  transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.sv-card:hover .play{background:var(--accent);color:var(--accent-ink);transform:translate(50%,-50%) scale(1.08)}
+.sv-thumb .play svg{width:18px;height:18px;margin-inline-start:2px}
+.sv-thumb .dur{
+  position:absolute;inset-block-end:10px;inset-inline-end:10px;
+  background:rgba(19,18,16,.82);border:1px solid var(--line);border-radius:999px;
+  padding:2px 9px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);
+}
+.sv-thumb .sv-rank{
+  position:absolute;inset-block-start:10px;inset-inline-start:10px;
+  background:var(--accent);color:var(--accent-ink);border-radius:999px;
+  padding:3px 11px;font-size:11.5px;font-weight:700;
+}
+.sv-meta{padding:16px 18px 18px}
+.sv-meta h3{font-size:1.02rem;font-weight:700;margin:0}
+.sv-sub{margin:5px 0 0;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--accent)}
+.sv-quote{margin:10px 0 0;color:var(--text-dim);font-size:.93rem;line-height:1.75}
+
+.sv-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px}
+.sv-modal[hidden]{display:none}
+.sv-modal-backdrop{position:absolute;inset:0;background:rgba(10,9,8,.82);backdrop-filter:blur(3px)}
+.sv-modal-body{
+  position:relative;width:min(900px,100%);background:var(--bg-2);
+  border:1px solid var(--line-strong);border-radius:var(--radius-lg);
+  padding:46px 18px 18px;box-shadow:var(--shadow);
+}
+.sv-modal-close{
+  position:absolute;top:10px;inset-inline-end:12px;width:34px;height:34px;
+  border-radius:50%;border:1px solid var(--line-strong);background:transparent;
+  color:var(--text);font-size:22px;line-height:1;cursor:pointer;
+}
+.sv-modal-close:hover{border-color:var(--accent);color:var(--accent)}
+.sv-modal-slot iframe,.sv-modal-slot video{width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:var(--radius);display:block}
+body.sv-modal-open{overflow:hidden}
+
+/* ============================================================
+   Login / signup and the member panel
+   ============================================================ */
+.nav-account{white-space:nowrap}
+
+.auth-card,.account-panel{
+  max-width:520px;margin:clamp(28px,6vw,64px) auto;padding:clamp(22px,4vw,34px);
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+}
+.account-panel{max-width:640px}
+.auth-head h2,.account-head h2{font-size:clamp(1.35rem,2.6vw,1.75rem);margin:6px 0 0}
+.auth-lede{color:var(--text-dim);margin-top:12px;font-size:.95rem}
+
+.auth-card label,.account-form label{display:block;margin:18px 0 6px;font-weight:600;font-size:.93rem}
+.auth-card input,.auth-card select,.account-form input,.account-form select{
+  width:100%;padding:12px 14px;border-radius:var(--radius);
+  background:var(--bg-inset);border:1px solid var(--line-strong);color:var(--text);
+  font-family:var(--font-body);font-size:1rem;
+}
+.auth-card input:focus,.auth-card select:focus,.account-form input:focus,.account-form select:focus{
+  outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);
+}
+.auth-card input[readonly],.account-form input[readonly]{opacity:.65;cursor:not-allowed}
+.auth-card .btn,.account-form .btn{width:100%;margin-top:20px;justify-content:center}
+
+.auth-phone-line{display:flex;align-items:center;gap:12px;color:var(--text-dim);font-family:var(--font-mono);font-size:.9rem}
+.auth-resend{margin-top:14px;display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--text-mute)}
+.linklike{
+  background:none;border:0;padding:0;color:var(--accent);cursor:pointer;
+  font:inherit;text-decoration:underline;text-underline-offset:3px;
+}
+.linklike:disabled{color:var(--text-mute);cursor:not-allowed;text-decoration:none}
+
+.auth-note{margin-top:16px;padding:11px 14px;border-radius:var(--radius);font-size:.88rem;line-height:1.7}
+.auth-note-test{background:rgba(240,130,30,.10);border:1px solid rgba(240,130,30,.35);color:var(--accent-2)}
+.auth-note-ok{background:rgba(80,190,120,.10);border:1px solid rgba(80,190,120,.35);color:#8fd6a8}
+.auth-msg{margin-top:16px;font-size:.92rem;min-height:1.4em}
+.auth-msg.is-err{color:#f08a7a}
+.auth-msg.is-ok{color:#8fd6a8}
+.auth-msg.is-test{color:var(--accent-2);font-family:var(--font-mono)}
+
+.field-note{display:block;margin-top:5px;font-size:.8rem;color:var(--text-mute)}
+.account-courses{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.account-courses h3{font-size:1.05rem;margin:0 0 12px}
+.account-course-list{margin:0;padding-inline-start:18px;color:var(--text-dim)}
+.account-courses .btn{margin-top:14px}
+.account-logout{margin-top:26px;text-align:center}
+
+@media (max-width:900px){
+  .sv-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:620px){
+  .sv-grid{grid-template-columns:1fr}
+  .nav-account{display:none}
+}
