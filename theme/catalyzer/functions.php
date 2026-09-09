@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.2.1' );
+define( 'CATALYZER_VERSION', '1.2.2' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
