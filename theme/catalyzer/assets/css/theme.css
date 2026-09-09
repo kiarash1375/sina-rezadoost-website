@@ -36,7 +36,14 @@
    Reset & base
    ============================================================ */
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;direction:rtl}
+html{
+  -webkit-text-size-adjust:100%;direction:rtl;
+  /* "clip" (unlike "hidden") does not create a scroll container, so a stray wide
+     element can never be scrolled to by focus() or an anchor jump. "hidden" stays
+     first as the fallback for browsers without "clip". */
+  overflow-x:hidden;
+  overflow-x:clip;
+}
 body{
   margin:0;
   font-family:var(--font-body);
@@ -48,6 +55,8 @@ body{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   overflow-x:hidden;
+  overflow-x:clip;
+  max-width:100%;
 }
 img{max-width:100%;height:auto;display:block}
 a{color:inherit;text-decoration:none}
@@ -347,7 +356,13 @@ form.lead input,form.lead select,form.lead textarea{
 }
 form.lead input:focus,form.lead select:focus,form.lead textarea:focus{outline:none;border-color:var(--accent)}
 form.lead textarea{resize:vertical;min-height:96px}
-.hp-field{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+/* Hidden from people, still reachable by bots. It must never sit outside the page:
+   an off-screen "left:-9999px" makes the RTL document ~10000px wide and horizontally
+   scrollable, which shifts the whole layout sideways with no scrollbar to undo it. */
+.hp-field{
+  position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;
+  overflow:hidden;clip:rect(1px,1px,1px,1px);clip-path:inset(50%);white-space:nowrap;
+}
 .form-note{font-size:.82rem;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:.02em}
 .form-ok,.form-err{border-radius:var(--radius-lg);padding:32px 28px;text-align:center;background:var(--bg-2);border:1px solid var(--accent)}
 .form-err{border-color:var(--line-strong)}
@@ -489,7 +504,7 @@ form.lead textarea{resize:vertical;min-height:96px}
 @media (max-width:782px){
   .admin-bar .site-header{top:46px}
 }
-@media (max-width:760px){
+@media (max-width:1024px){
   .nav-links,.nav-cta{display:none}
   .nav-toggle{display:grid}
   .nav-panel{
@@ -620,5 +635,5 @@ body.sv-modal-open{overflow:hidden}
 }
 @media (max-width:620px){
   .sv-grid{grid-template-columns:1fr}
-  .nav-account{display:none}
+  .nav-account{padding-inline:14px;font-size:.88rem}
 }
