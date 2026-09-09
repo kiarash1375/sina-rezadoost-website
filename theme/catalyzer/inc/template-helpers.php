@@ -147,7 +147,20 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 
 	$cta_li = '';
 	if ( $panel ) {
-		$cta_li = sprintf(
+		// در حالت موبایل دکمه‌ی ورود از هدر برداشته می‌شود؛ اینجا در دسترس می‌ماند.
+		if ( catalyzer_opt( 'show_account_btn', true ) && function_exists( 'catalyzer_account_url' ) ) {
+			$cta_li .= sprintf(
+				'<li class="menu-item nav-panel-account"><a class="btn btn-ghost" href="%s">%s</a></li>',
+				esc_url( catalyzer_account_url() ),
+				esc_html(
+					is_user_logged_in()
+						? catalyzer_opt( 'account_btn_text', 'پنل کاربری' )
+						: catalyzer_opt( 'login_btn_text', 'ورود / ثبت‌نام' )
+				)
+			);
+		}
+
+		$cta_li .= sprintf(
 			'<li class="menu-item nav-panel-cta"><a class="btn btn-primary" href="%s">%s</a></li>',
 			esc_url( catalyzer_anchor_url( catalyzer_opt( 'nav_cta_url', '#contact' ) ) ),
 			esc_html( catalyzer_opt( 'nav_cta_text', 'مشاوره و ثبت‌نام' ) )
