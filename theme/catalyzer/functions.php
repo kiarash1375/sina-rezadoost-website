@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.3.0' );
+define( 'CATALYZER_VERSION', '1.3.1' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -164,20 +164,15 @@ function catalyzer_retire_contact_links() {
 	}
 	$account = catalyzer_account_url();
 
-	$opts = get_option( 'catalyzer_options', array() );
-	if ( is_array( $opts ) ) {
-		$dirty = false;
-		foreach ( array( 'cta_btn1_url', 'cta_btn2_url', 'nav_cta_url' ) as $key ) {
-			if ( isset( $opts[ $key ] ) && false !== strpos( (string) $opts[ $key ], '#contact' ) ) {
-				$opts[ $key ] = $account;
-				$dirty        = true;
-			}
-		}
-		unset( $opts['nav_cta_text'], $opts['nav_cta_url'] );
-		if ( $dirty ) {
-			update_option( 'catalyzer_options', $opts );
+	// همه‌ی محتوای قالب در theme mod ذخیره می‌شود (catalyzer_opt → get_theme_mod).
+	foreach ( array( 'cta_btn1_url', 'cta_btn2_url', 'nav_cta_url' ) as $key ) {
+		$value = get_theme_mod( 'catalyzer_' . $key, '' );
+		if ( is_string( $value ) && false !== strpos( $value, '#contact' ) ) {
+			set_theme_mod( 'catalyzer_' . $key, $account );
 		}
 	}
+	remove_theme_mod( 'catalyzer_nav_cta_text' );
+	remove_theme_mod( 'catalyzer_nav_cta_url' );
 
 	foreach ( array( 'primary', 'footer' ) as $location ) {
 		$menu = wp_get_nav_menu_object( get_nav_menu_locations()[ $location ] ?? 0 );
