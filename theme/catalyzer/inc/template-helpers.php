@@ -145,27 +145,7 @@ function catalyzer_icon( $name ) {
 function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 	$id = $panel ? 'navPanel' : 'navLinks';
 
-	$cta_li = '';
-	if ( $panel ) {
-		// در حالت موبایل دکمه‌ی ورود از هدر برداشته می‌شود؛ اینجا در دسترس می‌ماند.
-		if ( catalyzer_opt( 'show_account_btn', true ) && function_exists( 'catalyzer_account_url' ) ) {
-			$cta_li .= sprintf(
-				'<li class="menu-item nav-panel-account"><a class="btn btn-ghost" href="%s">%s</a></li>',
-				esc_url( catalyzer_account_url() ),
-				esc_html(
-					is_user_logged_in()
-						? catalyzer_opt( 'account_btn_text', 'پنل کاربری' )
-						: catalyzer_opt( 'login_btn_text', 'ورود / ثبت‌نام' )
-				)
-			);
-		}
-
-		$cta_li .= sprintf(
-			'<li class="menu-item nav-panel-cta"><a class="btn btn-primary" href="%s">%s</a></li>',
-			esc_url( catalyzer_anchor_url( catalyzer_opt( 'nav_cta_url', '#contact' ) ) ),
-			esc_html( catalyzer_opt( 'nav_cta_text', 'مشاوره و ثبت‌نام' ) )
-		);
-	}
+	// دکمه‌ی ورود در نوار هدر است و در هر عرضی دیده می‌شود؛ اینجا تکرار نمی‌شود.
 
 	if ( has_nav_menu( 'primary' ) ) {
 		wp_nav_menu( array(
@@ -175,7 +155,6 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 			'menu_class'     => $list_class,
 			'depth'          => 1,
 			'fallback_cb'    => false,
-			'items_wrap'     => '<ul id="%1$s" class="%2$s">%3$s' . str_replace( '%', '%%', $cta_li ) . '</ul>',
 		) );
 		return;
 	}
@@ -185,7 +164,6 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#videos'  => 'ویدیوها',
-		'#contact' => 'تماس',
 	);
 	/**
 	 * فیلتر لینک‌های پیش‌فرض ناوبری.
@@ -200,7 +178,6 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 			esc_html( $label )
 		);
 	}
-	echo $cta_li; // phpcs:ignore WordPress.Security.EscapeOutput
 	echo '</ul>';
 }
 
@@ -235,7 +212,6 @@ function catalyzer_footer_menu() {
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#videos'  => 'ویدیوها',
-		'#contact' => 'تماس',
 	) );
 	echo '<nav>';
 	foreach ( $links as $hash => $label ) {

@@ -561,7 +561,7 @@ function catalyzer_render_account_panel() {
 		<div class="account-courses">
 			<h3><?php esc_html_e( 'دوره‌های من', 'catalyzer' ); ?></h3>
 			<?php
-			$purchased = apply_filters( 'catalyzer_user_courses', array(), $user->ID );
+			$purchased = function_exists( 'catalyzer_user_course_ids' ) ? catalyzer_user_course_ids( $user->ID ) : array();
 			if ( empty( $purchased ) ) :
 				?>
 				<p class="form-note"><?php esc_html_e( 'هنوز دوره‌ای تهیه نکرده‌ای. پس از خرید، دوره‌ها اینجا نمایش داده می‌شوند.', 'catalyzer' ); ?></p>
@@ -569,7 +569,24 @@ function catalyzer_render_account_panel() {
 			<?php else : ?>
 				<ul class="account-course-list">
 					<?php foreach ( $purchased as $course_id ) : ?>
-						<li><a href="<?php echo esc_url( get_permalink( $course_id ) ); ?>"><?php echo esc_html( get_the_title( $course_id ) ); ?></a></li>
+						<?php
+						$subtitle = get_post_meta( $course_id, '_cat_subtitle', true );
+						$thumb    = get_the_post_thumbnail( $course_id, 'medium', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' ) );
+						?>
+						<li class="account-course">
+							<?php if ( $thumb ) : ?>
+								<span class="account-course-thumb"><?php echo $thumb; // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+							<?php endif; ?>
+							<span class="account-course-body">
+								<span class="account-course-title"><?php echo esc_html( get_the_title( $course_id ) ); ?></span>
+								<?php if ( $subtitle ) : ?>
+									<span class="account-course-sub"><?php echo esc_html( $subtitle ); ?></span>
+								<?php endif; ?>
+							</span>
+							<a class="btn btn-ghost account-course-open" href="<?php echo esc_url( get_permalink( $course_id ) ); ?>">
+								<?php esc_html_e( 'ورود به دوره', 'catalyzer' ); ?>
+							</a>
+						</li>
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>

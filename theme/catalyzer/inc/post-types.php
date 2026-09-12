@@ -146,6 +146,7 @@ function catalyzer_meta_fields() {
 				'_cat_featured'  => array( 'label' => 'کارت ویژه (برجسته)', 'type' => 'checkbox' ),
 				'_cat_btn_text'  => array( 'label' => 'متن دکمه', 'type' => 'text', 'default' => 'ثبت‌نام' ),
 				'_cat_btn_url'   => array( 'label' => 'لینک دکمه (صفحه‌ی محصول ووکامرس یا هر آدرس)', 'type' => 'text' ),
+				'_cat_wc_product' => array( 'label' => 'شناسه‌ی محصول ووکامرس (برای باز شدن خودکار دوره پس از خرید)', 'type' => 'text' ),
 			),
 		),
 		'lesson' => array(
