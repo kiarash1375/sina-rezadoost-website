@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div class="cta-actions">
 			<?php if ( catalyzer_opt( 'cta_btn1_text' ) ) : ?>
-				<a class="btn btn-primary" href="<?php echo esc_url( catalyzer_anchor_url( catalyzer_opt( 'cta_btn1_url', '#contact' ) ) ); ?>"><?php echo esc_html( catalyzer_opt( 'cta_btn1_text' ) ); ?></a>
+				<a class="btn btn-primary" href="<?php echo esc_url( catalyzer_anchor_url( catalyzer_opt( 'cta_btn1_url', catalyzer_account_url() ) ) ); ?>"><?php echo esc_html( catalyzer_opt( 'cta_btn1_text' ) ); ?></a>
 			<?php endif; ?>
 			<?php if ( catalyzer_opt( 'cta_btn2_text' ) ) : ?>
 				<a class="btn btn-ghost" href="<?php echo esc_url( catalyzer_anchor_url( catalyzer_opt( 'cta_btn2_url', '#courses' ) ) ); ?>"><?php echo esc_html( catalyzer_opt( 'cta_btn2_text' ) ); ?></a>
