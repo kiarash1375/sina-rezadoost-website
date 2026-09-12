@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<div class="nav-right">
 				<?php if ( catalyzer_opt( 'show_account_btn', true ) && function_exists( 'catalyzer_account_url' ) ) : ?>
-					<a class="btn btn-ghost nav-account" href="<?php echo esc_url( catalyzer_account_url() ); ?>">
+					<a class="btn btn-primary nav-account" href="<?php echo esc_url( catalyzer_account_url() ); ?>">
 						<?php
 						echo esc_html(
 							is_user_logged_in()
@@ -52,9 +52,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 						?>
 					</a>
 				<?php endif; ?>
-				<a class="btn btn-primary nav-cta" href="<?php echo esc_url( catalyzer_anchor_url( catalyzer_opt( 'nav_cta_url', '#contact' ) ) ); ?>">
-					<?php echo esc_html( catalyzer_opt( 'nav_cta_text', 'مشاوره و ثبت‌نام' ) ); ?>
-				</a>
 				<button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="<?php esc_attr_e( 'منو', 'catalyzer' ); ?>" aria-expanded="false" aria-controls="navPanel">
 					<?php echo catalyzer_icon( 'menu' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				</button>
