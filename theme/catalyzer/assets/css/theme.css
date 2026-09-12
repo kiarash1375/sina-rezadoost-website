@@ -17,7 +17,7 @@
   --accent:    #F0821E;
   --accent-2:  #F6A24B;
   --accent-deep:#C6620C;
-  --accent-ink:#171614;
+  --accent-ink:#120D08;
   --glow:      rgba(240,130,30,.16);
   --shadow:    0 24px 60px -22px rgba(0,0,0,.65);
   --radius:    14px;
@@ -104,7 +104,10 @@ p{margin:0}
   white-space:nowrap;
 }
 .btn svg{width:18px;height:18px;flex:none}
-.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 12px 30px -12px var(--glow)}
+.btn-primary{
+  background:var(--accent);color:var(--accent-ink);font-weight:800;
+  box-shadow:0 10px 24px -16px var(--glow);
+}
 .btn-primary:hover{background:var(--accent-2);transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -155,8 +158,21 @@ p{margin:0}
 .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
 .icon-btn svg{width:18px;height:18px}
 .nav-toggle{display:none}
-.nav-cta{display:inline-flex}
 .nav-panel{display:none;list-style:none}
+/* The single action in the bar. A solid amber slab fought the dark header and
+   the menu next to it, so it is drawn in the same outlined language as the
+   burger: amber on a faint amber wash, not amber-on-amber. */
+.nav-account.btn-primary{
+  --bh:44px;padding-inline:22px;font-size:.92rem;font-weight:700;
+  background:color-mix(in srgb,var(--accent) 13%,transparent);
+  color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 46%,transparent);
+  box-shadow:none;
+}
+.nav-account.btn-primary:hover{
+  background:color-mix(in srgb,var(--accent) 22%,transparent);
+  border-color:var(--accent);color:var(--accent-2);
+}
 
 /* ============================================================
    Hero
@@ -505,7 +521,7 @@ form.lead textarea{resize:vertical;min-height:96px}
   .admin-bar .site-header{top:46px}
 }
 @media (max-width:1024px){
-  .nav-links,.nav-cta{display:none}
+  .nav-links{display:none}
   .nav-toggle{display:grid}
   .nav-panel{
     position:absolute;inset-inline:0;inset-block-start:70px;
@@ -516,7 +532,7 @@ form.lead textarea{resize:vertical;min-height:96px}
   .nav-panel li{margin:0}
   .nav-panel a{display:block;padding:12px 6px;border-bottom:1px solid var(--line);color:var(--text-dim)}
   .nav-panel li:last-child a{border-bottom:none}
-  .nav-panel .btn{margin-top:12px}
+  .nav-panel .btn{margin-top:14px;width:100%}
 }
 @media (max-width:520px){
   .videos-grid{grid-template-columns:1fr}
@@ -626,8 +642,28 @@ body.sv-modal-open{overflow:hidden}
 .field-note{display:block;margin-top:5px;font-size:.8rem;color:var(--text-mute)}
 .account-courses{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
 .account-courses h3{font-size:1.05rem;margin:0 0 12px}
-.account-course-list{margin:0;padding-inline-start:18px;color:var(--text-dim)}
-.account-courses .btn{margin-top:14px}
+.account-panel .account-course-list{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.account-course{
+  display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;
+  padding:12px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg-inset);
+}
+.account-course-thumb img{width:64px;height:64px;object-fit:cover;border-radius:10px;display:block}
+.account-course-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.account-course-title{font-family:var(--font-display);font-weight:700;color:var(--text)}
+.account-course-sub{font-size:.85rem;color:var(--text-mute)}
+.account-course-open{--bh:40px;padding-inline:18px;font-size:.88rem;white-space:nowrap}
+.account-courses>.btn{margin-top:14px}
+.course-owned{
+  display:flex;align-items:center;gap:8px;margin:0 0 14px;
+  font-family:var(--font-display);font-weight:700;color:#8fd6a8;
+}
+.course-owned svg{width:20px;height:20px;flex:none}
+@media (max-width:560px){
+  .account-course{grid-template-columns:52px 1fr;row-gap:10px}
+  .account-course-thumb img{width:52px;height:52px}
+  .account-course-open{grid-column:1 / -1;width:100%}
+}
 .account-logout{margin-top:26px;text-align:center}
 
 @media (max-width:900px){
@@ -635,5 +671,5 @@ body.sv-modal-open{overflow:hidden}
 }
 @media (max-width:620px){
   .sv-grid{grid-template-columns:1fr}
-  .nav-account{padding-inline:14px;font-size:.88rem}
+  .nav-account.btn-primary{--bh:40px;padding-inline:16px;font-size:.85rem}
 }
