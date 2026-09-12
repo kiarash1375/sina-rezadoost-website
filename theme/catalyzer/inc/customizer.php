@@ -85,8 +85,6 @@ function catalyzer_customize_register( $wp ) {
 	$add_section( 'catalyzer_general', 'عمومی و برند', 10 );
 	catalyzer_cz_field( $wp, 'catalyzer_general', 'brand_name', 'نام برند (کنار لوگو در هدر)', array( 'default' => 'کاتالیزور' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_general', 'brand_sub', 'زیرنویس لاتین برند', array( 'default' => 'SINA REZADOOST' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_general', 'nav_cta_text', 'متن دکمه‌ی هدر', array( 'default' => 'مشاوره و ثبت‌نام' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_general', 'nav_cta_url', 'لینک دکمه‌ی هدر', array( 'default' => '#contact' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_general', 'footer_logo_id', 'لوگوی فوتر (تصویر)', array( 'type' => 'image' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_general', 'footer_copy', 'متن کپی‌رایت فوتر', array( 'default' => '© ۱۴۰۴ کاتالیزور — دکتر سینا رضادوست. تمام حقوق محفوظ است.' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_general', 'footer_tagline', 'شعار فوتر', array( 'default' => 'شتاب‌دهنده‌ی رشد شیمیِ کنکور' ) );
@@ -210,8 +208,8 @@ function catalyzer_customize_register( $wp ) {
 	$add_section( 'catalyzer_cta', 'بنر فراخوان', 90 );
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_heading', 'تیتر', array( 'default' => 'همین امروز شیمی‌ات را از نقطه‌ضعف به نقطه‌قوت تبدیل کن' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_text', 'توضیح', array( 'default' => 'برای مشاوره‌ی انتخاب دوره، پیام بده.' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn1_text', 'دکمه‌ی اول — متن', array( 'default' => 'درخواست مشاوره' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn1_url', 'دکمه‌ی اول — لینک', array( 'default' => '#contact' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn1_text', 'دکمه‌ی اول — متن', array( 'default' => 'ثبت‌نام و شروع' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn1_url', 'دکمه‌ی اول — لینک', array( 'default' => '' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn2_text', 'دکمه‌ی دوم — متن', array( 'default' => 'دیدن دوره‌ها' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn2_url', 'دکمه‌ی دوم — لینک', array( 'default' => '#courses' ) );
 

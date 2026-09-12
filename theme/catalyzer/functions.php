@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.2.2' );
+define( 'CATALYZER_VERSION', '1.3.1' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -148,15 +148,51 @@ function catalyzer_maybe_upgrade() {
 	if ( function_exists( 'catalyzer_ensure_account_page' ) ) {
 		catalyzer_ensure_account_page();
 	}
+	catalyzer_retire_contact_links();
 	update_option( 'catalyzer_theme_version', CATALYZER_VERSION );
 }
 add_action( 'admin_init', 'catalyzer_maybe_upgrade', 5 );
+
+/**
+ * بخش «تماس و مشاوره» در نسخه‌ی ۱.۳.۰ حذف شد. هر لینکی که هنوز به #contact
+ * اشاره می‌کند به صفحه‌ی حساب کاربری منتقل می‌شود و آیتم «تماس» از منوها
+ * برداشته می‌شود، وگرنه کاربر روی لنگرِ ناموجود می‌ماند.
+ */
+function catalyzer_retire_contact_links() {
+	if ( ! function_exists( 'catalyzer_account_url' ) ) {
+		return;
+	}
+	$account = catalyzer_account_url();
+
+	// همه‌ی محتوای قالب در theme mod ذخیره می‌شود (catalyzer_opt → get_theme_mod).
+	foreach ( array( 'cta_btn1_url', 'cta_btn2_url', 'nav_cta_url' ) as $key ) {
+		$value = get_theme_mod( 'catalyzer_' . $key, '' );
+		if ( is_string( $value ) && false !== strpos( $value, '#contact' ) ) {
+			set_theme_mod( 'catalyzer_' . $key, $account );
+		}
+	}
+	remove_theme_mod( 'catalyzer_nav_cta_text' );
+	remove_theme_mod( 'catalyzer_nav_cta_url' );
+
+	foreach ( array( 'primary', 'footer' ) as $location ) {
+		$menu = wp_get_nav_menu_object( get_nav_menu_locations()[ $location ] ?? 0 );
+		if ( ! $menu ) {
+			continue;
+		}
+		foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $item ) {
+			if ( isset( $item->url ) && false !== strpos( $item->url, '#contact' ) ) {
+				wp_delete_post( $item->ID, true );
+			}
+		}
+	}
+}
 
 require CATALYZER_DIR . '/inc/template-helpers.php';
 require CATALYZER_DIR . '/inc/post-types.php';
 require CATALYZER_DIR . '/inc/customizer.php';
 require CATALYZER_DIR . '/inc/contact.php';
 require CATALYZER_DIR . '/inc/auth.php';
+require CATALYZER_DIR . '/inc/enrollment.php';
 require CATALYZER_DIR . '/inc/demo-content.php';
 
 if ( class_exists( 'WooCommerce' ) ) {

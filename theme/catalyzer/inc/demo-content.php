@@ -297,7 +297,6 @@ function catalyzer_ensure_demo_menu() {
 			array( 'دوره‌ها', home_url( '/#courses' ) ),
 			array( 'ویدیوهای کلاس', home_url( '/#videos' ) ),
 			array( 'رتبه‌برترها', home_url( '/#success' ) ),
-			array( 'تماس', home_url( '/#contact' ) ),
 		);
 		foreach ( $items as $order => $item ) {
 			wp_update_nav_menu_item( $menu_id, 0, array(

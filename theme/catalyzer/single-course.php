@@ -20,6 +20,7 @@ while ( have_posts() ) :
 	$features = catalyzer_lines( get_post_meta( get_the_ID(), '_cat_features', true ) );
 	$btn_txt  = get_post_meta( get_the_ID(), '_cat_btn_text', true ) ?: 'ثبت‌نام و خرید';
 	$btn_url  = get_post_meta( get_the_ID(), '_cat_btn_url', true );
+	$owned    = function_exists( 'catalyzer_user_has_course' ) && catalyzer_user_has_course( get_the_ID() );
 	?>
 	<div class="page-hero">
 		<div class="wrap">
@@ -42,7 +43,10 @@ while ( have_posts() ) :
 				</div>
 
 				<div class="course featured" style="transform:none">
-					<?php if ( $price ) : ?>
+					<?php if ( $owned ) : ?>
+						<p class="course-owned"><?php echo catalyzer_icon( 'check-c' ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php esc_html_e( 'این دوره در حساب شماست', 'catalyzer' ); ?></p>
+					<?php endif; ?>
+					<?php if ( $price && ! $owned ) : ?>
 						<div class="price">
 							<span class="amt"><?php echo esc_html( $price ); ?></span>
 							<span class="cur"><?php echo esc_html( $currency ); ?></span>
@@ -58,10 +62,12 @@ while ( have_posts() ) :
 						</ul>
 					<?php endif; ?>
 
-					<?php if ( $btn_url ) : ?>
+					<?php if ( $owned ) : ?>
+						<a class="btn btn-ghost btn-block" href="<?php echo esc_url( catalyzer_account_url() ); ?>"><?php esc_html_e( 'پنل کاربری', 'catalyzer' ); ?></a>
+					<?php elseif ( $btn_url ) : ?>
 						<a class="btn btn-primary btn-block" href="<?php echo esc_url( $btn_url ); ?>"><?php echo esc_html( $btn_txt ); ?></a>
 					<?php else : ?>
-						<a class="btn btn-primary btn-block" href="<?php echo esc_url( catalyzer_anchor_url( '#contact' ) ); ?>"><?php esc_html_e( 'درخواست مشاوره', 'catalyzer' ); ?></a>
+						<a class="btn btn-primary btn-block" href="<?php echo esc_url( catalyzer_account_url() ); ?>"><?php esc_html_e( 'ثبت‌نام و خرید', 'catalyzer' ); ?></a>
 					<?php endif; ?>
 				</div>
 			</div>

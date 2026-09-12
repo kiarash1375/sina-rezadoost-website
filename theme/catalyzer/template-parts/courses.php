@@ -48,7 +48,7 @@ if ( ! $q->have_posts() && ! current_user_can( 'edit_posts' ) ) {
 					$btn_txt  = get_post_meta( get_the_ID(), '_cat_btn_text', true );
 					$btn_txt  = $btn_txt ? $btn_txt : 'ثبت‌نام';
 					$btn_url  = get_post_meta( get_the_ID(), '_cat_btn_url', true );
-					$btn_url  = $btn_url ? $btn_url : catalyzer_anchor_url( '#contact' );
+					$btn_url  = $btn_url ? $btn_url : catalyzer_account_url();
 					?>
 					<div class="course<?php echo $featured ? ' featured' : ''; ?>">
 						<?php if ( $badge ) : ?>

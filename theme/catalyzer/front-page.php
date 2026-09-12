@@ -37,9 +37,6 @@ if ( catalyzer_section_enabled( 'testimonials' ) ) {
 if ( catalyzer_section_enabled( 'cta' ) ) {
 	get_template_part( 'template-parts/cta' );
 }
-if ( catalyzer_section_enabled( 'contact' ) ) {
-	get_template_part( 'template-parts/contact' );
-}
 
 // اگر صفحه‌ی اصلی روی «آخرین نوشته‌ها» تنظیم شده باشد، محتوای صفحه‌ی برگزیده (در صورت وجود) نمایش داده نمی‌شود؛
 // این قالب عمداً فقط بخش‌های بالا را نشان می‌دهد.
