@@ -144,7 +144,7 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_heading', 'تیتر', array( 'default' => 'سینا رضادوست، دبیر شیمی کنکور' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_body', 'متن معرفی (هر پاراگراف یک خط خالی فاصله)', array(
 		'type'    => 'html',
-		'default' => "دکتر سینا رضادوست، دکتر داروساز و دانش‌آموخته‌ی دبیرستان شهید هاشمی‌نژاد ۱ مشهد است. سال‌هاست شیمیِ کنکور را برای داوطلبان تجربی و ریاضی تدریس می‌کند و نامش با رتبه‌های تک‌رقمی کنکور گره خورده است.\n\nتدریس در مدارس سمپاد و طراحی آزمون‌های کشوریِ قلم‌چی و خیلی‌سبز، نگاه او را به بودجه‌بندی و تیپ سؤالات کنکور دقیق کرده است؛ همان چیزی که در کلاس‌ها به دانش‌آموز منتقل می‌شود.",
+		'default' => catalyzer_default_bio(),
 	) );
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_sign', 'امضا', array( 'default' => 'دکتر سینا رضادوست' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_sign_sub', 'زیر امضا', array( 'default' => 'Dr. Sina Rezadoost — Chemistry, Mashhad' ) );
