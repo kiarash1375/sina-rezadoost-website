@@ -2,6 +2,9 @@
 /**
  * بخش «ویدیوهای کلاس» — از نوع محتوای lesson.
  *
+ * ویدیوها از کانال آپارات درون‌ریزی می‌شوند و همین‌جا، داخل خود سایت، پخش
+ * می‌شوند؛ کارت لایت‌باکس را باز می‌کند و کاربر از سایت بیرون نمی‌رود.
+ *
  * @package Catalyzer
  */
 
@@ -27,6 +30,16 @@ $more_url = catalyzer_opt( 'videos_more_url' );
 if ( ! $more_url && post_type_exists( 'lesson' ) ) {
 	$more_url = get_post_type_archive_link( 'lesson' );
 }
+
+// فیلتر فقط وقتی معنی دارد که روی همین کارت‌ها بیش از یک دسته باشد.
+$shown_terms = array();
+foreach ( $q->posts as $p ) {
+	foreach ( (array) get_the_terms( $p->ID, 'lesson_cat' ) as $t ) {
+		if ( $t instanceof WP_Term ) {
+			$shown_terms[ $t->slug ] = $t->name;
+		}
+	}
+}
 ?>
 <section class="section" id="videos">
 	<div class="wrap">
@@ -34,46 +47,33 @@ if ( ! $more_url && post_type_exists( 'lesson' ) ) {
 			<?php if ( catalyzer_opt( 'videos_eyebrow' ) ) : ?>
 				<p class="eyebrow"><?php echo esc_html( catalyzer_opt( 'videos_eyebrow' ) ); ?></p>
 			<?php endif; ?>
-			<h2><?php echo esc_html( catalyzer_opt( 'videos_heading' ) ); ?></h2>
+			<h2><?php echo esc_html( catalyzer_opt( 'videos_heading', 'ویدیوهای کلاس' ) ); ?></h2>
 			<?php if ( catalyzer_opt( 'videos_intro' ) ) : ?>
 				<p><?php echo esc_html( catalyzer_opt( 'videos_intro' ) ); ?></p>
 			<?php endif; ?>
 		</div>
 
 		<?php if ( $q->have_posts() ) : ?>
+			<?php if ( count( $shown_terms ) > 1 ) : ?>
+				<div class="video-filter" role="group" aria-label="<?php esc_attr_e( 'دسته‌بندی ویدیوها', 'catalyzer' ); ?>">
+					<button type="button" class="video-filter-btn is-on" data-filter="*" aria-pressed="true">
+						<?php esc_html_e( 'همه', 'catalyzer' ); ?>
+					</button>
+					<?php foreach ( $shown_terms as $slug => $name ) : ?>
+						<button type="button" class="video-filter-btn" data-filter="<?php echo esc_attr( $slug ); ?>" aria-pressed="false">
+							<?php echo esc_html( $name ); ?>
+						</button>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
 			<div class="videos-grid stagger">
 				<?php
 				while ( $q->have_posts() ) :
 					$q->the_post();
-					$dur  = get_post_meta( get_the_ID(), '_cat_duration', true );
-					$catx = get_post_meta( get_the_ID(), '_cat_category', true );
-					$free = get_post_meta( get_the_ID(), '_cat_free', true );
-					?>
-					<a class="video" href="<?php the_permalink(); ?>">
-						<div class="thumb">
-							<?php
-							if ( has_post_thumbnail() ) {
-								the_post_thumbnail( 'catalyzer-card', array( 'loading' => 'lazy', 'alt' => get_the_title() ) );
-							} else {
-								echo catalyzer_icon( 'rings' ); // phpcs:ignore WordPress.Security.EscapeOutput
-							}
-							?>
-							<?php if ( $free ) : ?>
-								<span class="tag"><?php esc_html_e( 'نمونه‌ی رایگان', 'catalyzer' ); ?></span>
-							<?php endif; ?>
-							<span class="play"><?php echo catalyzer_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-							<?php if ( $dur ) : ?>
-								<span class="dur"><?php echo esc_html( $dur ); ?></span>
-							<?php endif; ?>
-						</div>
-						<div class="meta">
-							<?php if ( $catx ) : ?>
-								<span class="cat"><?php echo esc_html( $catx ); ?></span>
-							<?php endif; ?>
-							<h3><?php the_title(); ?></h3>
-						</div>
-					</a>
-				<?php endwhile; ?>
+					get_template_part( 'template-parts/video-card' );
+				endwhile;
+				?>
 			</div>
 
 			<?php if ( $more_url ) : ?>
@@ -84,7 +84,7 @@ if ( ! $more_url && post_type_exists( 'lesson' ) ) {
 				</div>
 			<?php endif; ?>
 		<?php else : ?>
-			<p class="form-note">هنوز ویدیویی ثبت نشده است. از پیشخوان → «ویدیوهای کلاس» اضافه کنید. (این پیام فقط برای مدیر دیده می‌شود.)</p>
+			<p class="form-note">هنوز ویدیویی ثبت نشده است. از پیشخوان → «ویدیوهای کلاس» → «درون‌ریزی از آپارات» واردشان کنید. (این پیام فقط برای مدیر دیده می‌شود.)</p>
 		<?php endif; ?>
 	</div>
 </section>
