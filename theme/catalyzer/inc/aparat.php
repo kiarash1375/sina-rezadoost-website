@@ -157,6 +157,32 @@ function catalyzer_aparat_playlists() {
 	return $out;
 }
 
+/**
+ * پوستر یک ویدیو، از خودِ صفحه‌ی ویدیو.
+ *
+ * پوستری که فهرست کانال می‌دهد (نسخه‌ی `-b`) برای این کانال ۴۰۴ می‌دهد؛ نسخه‌ای
+ * که endpoint خود ویدیو می‌دهد (`-l`) بالا می‌آید. پس مرجع، همین یکی است و
+ * مقدار فهرست فقط پشتیبان است.
+ *
+ * @param string $uid شناسه‌ی ویدیو.
+ * @return string آدرس پوستر یا رشته‌ی خالی.
+ */
+function catalyzer_aparat_poster( $uid ) {
+	$body = catalyzer_aparat_get( '/api/fa/v1/video/video/show/videohash/' . rawurlencode( (string) $uid ) );
+	if ( is_wp_error( $body ) ) {
+		return '';
+	}
+
+	$attr = isset( $body['data']['attributes'] ) ? (array) $body['data']['attributes'] : array();
+	foreach ( array( 'big_poster', 'small_poster', 'medium_poster' ) as $key ) {
+		if ( ! empty( $attr[ $key ] ) && is_string( $attr[ $key ] ) ) {
+			return esc_url_raw( $attr[ $key ] );
+		}
+	}
+
+	return '';
+}
+
 /* -------------------------------------------------------------------------
  * کمک‌کارها
  * ---------------------------------------------------------------------- */
@@ -383,9 +409,14 @@ function catalyzer_aparat_sync() {
 
 		$category = isset( $by_uid[ $uid ] ) ? $by_uid[ $uid ] : 'دسته‌بندی‌نشده';
 
+		$poster = catalyzer_aparat_poster( $uid );
+		if ( ! $poster && ! empty( $video['big_poster'] ) ) {
+			$poster = esc_url_raw( (string) $video['big_poster'] );
+		}
+
 		update_post_meta( $post_id, '_cat_aparat_uid', $uid );
 		update_post_meta( $post_id, '_cat_aparat_id', isset( $video['id'] ) ? (string) $video['id'] : '' );
-		update_post_meta( $post_id, '_cat_aparat_poster', isset( $video['big_poster'] ) ? esc_url_raw( (string) $video['big_poster'] ) : '' );
+		update_post_meta( $post_id, '_cat_aparat_poster', $poster );
 		update_post_meta( $post_id, '_cat_aparat_visits', isset( $video['visit_cnt'] ) ? (int) $video['visit_cnt'] : 0 );
 		update_post_meta( $post_id, '_cat_aparat_seconds', isset( $video['duration'] ) ? (int) $video['duration'] : 0 );
 		update_post_meta( $post_id, '_cat_video_url', catalyzer_aparat_watch_url( $uid ) );
