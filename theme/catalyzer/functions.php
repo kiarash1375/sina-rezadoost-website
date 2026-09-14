@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.3.1' );
+define( 'CATALYZER_VERSION', '1.4.0' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -193,6 +193,7 @@ require CATALYZER_DIR . '/inc/customizer.php';
 require CATALYZER_DIR . '/inc/contact.php';
 require CATALYZER_DIR . '/inc/auth.php';
 require CATALYZER_DIR . '/inc/enrollment.php';
+require CATALYZER_DIR . '/inc/aparat.php';
 require CATALYZER_DIR . '/inc/demo-content.php';
 
 if ( class_exists( 'WooCommerce' ) ) {
