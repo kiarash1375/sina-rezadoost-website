@@ -150,7 +150,7 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_sign_sub', 'زیر امضا', array( 'default' => 'Dr. Sina Rezadoost — Chemistry, Mashhad' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_about', 'about_creds', 'رزومه (هر خط یک مورد؛ قالب: «بخش پررنگ | ادامه»)', array(
 		'type'    => 'textarea',
-		'default' => "دکتر داروساز | تحصیلات دانشگاهی در رشته‌ی داروسازی\nمدرس کنکور مدارس سمپاد | تدریس شیمی در مدارس تیزهوشان\nمدرس رتبه‌های ۲، ۳، ۴، ۶، ۹ و ... کنکور | همراهیِ داوطلبان برتر کشوری\nطراح آزمون‌های کشوریِ قلم‌چی و خیلی‌سبز\nدانش‌آموخته‌ی هاشمی‌نژاد ۱ مشهد",
+		'default' => catalyzer_default_credentials(),
 	) );
 
 	/* ---------- متد ---------- */
