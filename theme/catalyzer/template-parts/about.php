@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // رزومه از سفارشی‌سازی می‌آید و اگر پر نشده باشد، از پیش‌فرضِ خودِ قالب.
 $creds = catalyzer_lines( catalyzer_opt( 'about_creds', catalyzer_default_credentials() ) );
-$body  = catalyzer_opt( 'about_body' );
+$body  = catalyzer_opt( 'about_body', catalyzer_default_bio() );
 ?>
 <section class="section" id="about">
 	<div class="wrap">
