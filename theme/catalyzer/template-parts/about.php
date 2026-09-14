@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$creds = catalyzer_lines( catalyzer_opt( 'about_creds' ) );
+// رزومه از سفارشی‌سازی می‌آید و اگر پر نشده باشد، از پیش‌فرضِ خودِ قالب.
+$creds = catalyzer_lines( catalyzer_opt( 'about_creds', catalyzer_default_credentials() ) );
 $body  = catalyzer_opt( 'about_body' );
 ?>
 <section class="section" id="about">
