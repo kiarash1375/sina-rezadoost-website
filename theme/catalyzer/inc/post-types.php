@@ -109,6 +109,22 @@ function catalyzer_register_post_types() {
 		'capabilities'    => array( 'create_posts' => 'do_not_allow' ),
 		'supports'        => array( 'title', 'editor' ),
 	) );
+
+	// دسته‌بندی ویدیوها — پلی‌لیست‌های آپارات روی همین ترم‌ها می‌نشینند.
+	register_taxonomy( 'lesson_cat', array( 'lesson' ), array(
+		'labels'            => array(
+			'name'          => 'دسته‌بندی ویدیوها',
+			'singular_name' => 'دسته‌بندی',
+			'add_new_item'  => 'افزودن دسته‌بندی',
+			'edit_item'     => 'ویرایش دسته‌بندی',
+			'menu_name'     => 'دسته‌بندی‌ها',
+		),
+		'public'            => true,
+		'hierarchical'      => false,
+		'show_admin_column' => true,
+		'show_in_rest'      => true,
+		'rewrite'           => array( 'slug' => 'video-category', 'with_front' => false ),
+	) );
 }
 add_action( 'init', 'catalyzer_register_post_types' );
 
@@ -151,11 +167,13 @@ function catalyzer_meta_fields() {
 		),
 		'lesson' => array(
 			'title'  => 'مشخصات ویدیو',
+			'note'   => 'ویدیوهایی که از آپارات درون‌ریزی شده‌اند این فیلدها را خودکار پر می‌کنند و هر همگام‌سازی دوباره بازنویسی‌شان می‌کند. دسته‌بندی را از جعبه‌ی «دسته‌بندی‌ها» بگیرید.',
 			'fields' => array(
-				'_cat_video_url' => array( 'label' => 'آدرس ویدیو (یوتیوب / اپارات / mp4)', 'type' => 'text' ),
-				'_cat_duration'  => array( 'label' => 'مدت زمان (مثلاً ۱۴:۲۰)', 'type' => 'text' ),
-				'_cat_category'  => array( 'label' => 'برچسب دسته (مثلاً «دوازدهم · فصل ۳»)', 'type' => 'text' ),
-				'_cat_free'      => array( 'label' => 'نمونه‌ی رایگان', 'type' => 'checkbox' ),
+				'_cat_aparat_uid' => array( 'label' => 'شناسه‌ی آپارات (خودکار)', 'type' => 'text' ),
+				'_cat_video_url'  => array( 'label' => 'آدرس ویدیو (یوتیوب / اپارات / mp4)', 'type' => 'text' ),
+				'_cat_duration'   => array( 'label' => 'مدت زمان (مثلاً ۱۴:۲۰)', 'type' => 'text' ),
+				'_cat_category'   => array( 'label' => 'برچسب دسته (مثلاً «دوازدهم · فصل ۳»)', 'type' => 'text' ),
+				'_cat_free'       => array( 'label' => 'نمونه‌ی رایگان', 'type' => 'checkbox' ),
 			),
 		),
 		'success_video' => array(

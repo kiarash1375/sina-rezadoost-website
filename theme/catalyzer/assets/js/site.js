@@ -211,10 +211,14 @@
 })();
 
 /* ---------------------------------------------------------------------------
- * Success-story videos: play inside a lightbox, one iframe at a time.
+ * Videos: play inside a lightbox, one iframe at a time.
+ *
+ * Shared by the top-student cards and by the class videos pulled in from
+ * Aparat — anything carrying data-embed. The iframe is built on open and thrown
+ * away on close, so no player loads until someone asks for one.
  * ------------------------------------------------------------------------ */
 (function () {
-  var cards = Array.prototype.slice.call(document.querySelectorAll(".sv-card[data-embed]"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll("[data-embed]"));
   if (!cards.length) return;
 
   var modal = document.createElement("div");
@@ -259,5 +263,42 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !modal.hasAttribute("hidden")) close();
+  });
+})();
+
+/* ---------------------------------------------------------------------------
+ * Video category filter on the landing page.
+ *
+ * Purely client-side: the cards are already on the page, so filtering is a
+ * class toggle. The archive uses real term links instead, which is why this
+ * only binds when the buttons exist.
+ * ------------------------------------------------------------------------ */
+(function () {
+  var bar = document.querySelector(".video-filter");
+  if (!bar) return;
+
+  var buttons = Array.prototype.slice.call(bar.querySelectorAll("button.video-filter-btn"));
+  if (!buttons.length) return;
+
+  var grid = document.querySelector("#videos .videos-grid");
+  if (!grid) return;
+
+  var cards = Array.prototype.slice.call(grid.querySelectorAll(".video"));
+
+  function apply(slug) {
+    cards.forEach(function (card) {
+      var cats = (card.getAttribute("data-cats") || "").split(/\s+/);
+      var show = slug === "*" || cats.indexOf(slug) !== -1;
+      card.hidden = !show;
+    });
+    buttons.forEach(function (b) {
+      var on = b.getAttribute("data-filter") === slug;
+      b.classList.toggle("is-on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () { apply(b.getAttribute("data-filter")); });
   });
 })();

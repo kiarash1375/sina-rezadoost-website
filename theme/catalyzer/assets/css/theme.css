@@ -323,6 +323,37 @@ p{margin:0}
 .video .meta .cat{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
 .video .meta h3{font-size:1.02rem;margin-top:7px;font-weight:700}
 .videos-more{margin-top:34px;text-align:center}
+/* A card that opens the lightbox is a button, so it has to be given back the
+   affordances an anchor used to provide. */
+article.video{cursor:pointer;text-align:start;width:100%}
+article.video:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* .video sets display:block, which outranks the user-agent rule for [hidden];
+   without this the category filter sets the attribute and nothing disappears. */
+.video[hidden]{display:none}
+
+/* Category chips — the same pill language as the nav, so the page reads as one
+   system. Buttons on the landing page, links on the archive; both land here. */
+.video-filter{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 26px}
+.video-filter-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  font:inherit;font-size:.88rem;font-weight:600;line-height:1;
+  padding:9px 16px;border-radius:999px;cursor:pointer;text-decoration:none;
+  background:var(--bg-2);color:var(--text-dim);border:1px solid var(--line);
+  transition:color .16s ease,border-color .16s ease,background .16s ease;
+}
+.video-filter-btn:hover{color:var(--text);border-color:var(--line-strong)}
+.video-filter-btn.is-on{
+  background:color-mix(in srgb,var(--accent) 13%,transparent);
+  color:var(--accent);border-color:color-mix(in srgb,var(--accent) 46%,transparent);
+}
+.video-filter-n{font-family:var(--font-mono);font-size:11px;opacity:.75}
+
+.lesson-foot{margin-top:40px;display:grid;gap:14px;justify-items:center;text-align:center}
+.lesson-terms{margin:0;color:var(--text-mute);font-size:.9rem}
+.lesson-terms a{color:var(--accent)}
+.lesson-terms a + a::before{content:'، ';color:var(--text-mute)}
+.lesson-source{font-size:.88rem;color:var(--text-mute)}
+.lesson-source:hover{color:var(--accent)}
 
 /* ============================================================
    Testimonials
@@ -594,7 +625,7 @@ form.lead textarea{resize:vertical;min-height:96px}
   color:var(--text);font-size:22px;line-height:1;cursor:pointer;
 }
 .sv-modal-close:hover{border-color:var(--accent);color:var(--accent)}
-.sv-modal-slot iframe,.sv-modal-slot video{width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:var(--radius);display:block}
+.sv-modal-slot iframe,.sv-modal-slot video{width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:var(--radius);display:block;background:#000}
 body.sv-modal-open{overflow:hidden}
 
 /* ============================================================
