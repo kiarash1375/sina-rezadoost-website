@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.4.2' );
+define( 'CATALYZER_VERSION', '1.5.1' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -149,6 +149,9 @@ function catalyzer_maybe_upgrade() {
 		catalyzer_ensure_account_page();
 	}
 	catalyzer_retire_contact_links();
+	if ( function_exists( 'catalyzer_prepare_library_dir' ) ) {
+		catalyzer_prepare_library_dir();
+	}
 	update_option( 'catalyzer_theme_version', CATALYZER_VERSION );
 }
 add_action( 'admin_init', 'catalyzer_maybe_upgrade', 5 );
@@ -193,6 +196,8 @@ require CATALYZER_DIR . '/inc/customizer.php';
 require CATALYZER_DIR . '/inc/contact.php';
 require CATALYZER_DIR . '/inc/auth.php';
 require CATALYZER_DIR . '/inc/enrollment.php';
+require CATALYZER_DIR . '/inc/library.php';
+require CATALYZER_DIR . '/inc/access-codes.php';
 require CATALYZER_DIR . '/inc/aparat.php';
 require CATALYZER_DIR . '/inc/demo-content.php';
 

@@ -20,6 +20,13 @@ while ( have_posts() ) :
 	$cat_label = function_exists( 'catalyzer_lesson_category_label' ) ? catalyzer_lesson_category_label( $cat_id ) : get_post_meta( $cat_id, '_cat_category', true );
 	$cat_embed = function_exists( 'catalyzer_lesson_embed' ) ? catalyzer_lesson_embed( $cat_id ) : '';
 	$cat_terms = get_the_terms( $cat_id, 'lesson_cat' );
+
+	// ویدیوی خریدنی تا باز نشده پخش نمی‌شود.
+	$cat_open = catalyzer_user_can_access( $cat_id );
+	if ( ! $cat_open ) {
+		$cat_embed = '';
+		$cat_watch = '';
+	}
 	?>
 	<div class="page-hero">
 		<div class="wrap">
@@ -38,7 +45,13 @@ while ( have_posts() ) :
 					<div class="embed-frame"><?php echo $cat_embed; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 				</div>
 			<?php elseif ( has_post_thumbnail() ) : ?>
-				<div class="lesson-embed"><?php the_post_thumbnail( 'large' ); ?></div>
+				<div class="lesson-embed<?php echo $cat_open ? '' : ' is-locked'; ?>"><?php the_post_thumbnail( 'large' ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( ! $cat_open ) : ?>
+				<div class="lesson-lock">
+					<?php get_template_part( 'template-parts/lock-panel' ); ?>
+				</div>
 			<?php endif; ?>
 
 			<?php if ( get_the_content() ) : ?>

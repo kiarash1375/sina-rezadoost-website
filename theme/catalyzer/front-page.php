@@ -25,6 +25,9 @@ if ( catalyzer_section_enabled( 'method' ) ) {
 if ( catalyzer_section_enabled( 'courses' ) ) {
 	get_template_part( 'template-parts/courses' );
 }
+if ( catalyzer_section_enabled( 'notes' ) ) {
+	get_template_part( 'template-parts/notes' );
+}
 if ( catalyzer_section_enabled( 'videos' ) ) {
 	get_template_part( 'template-parts/videos' );
 }
