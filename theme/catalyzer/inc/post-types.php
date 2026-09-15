@@ -173,7 +173,34 @@ function catalyzer_meta_fields() {
 				'_cat_video_url'  => array( 'label' => 'آدرس ویدیو (یوتیوب / اپارات / mp4)', 'type' => 'text' ),
 				'_cat_duration'   => array( 'label' => 'مدت زمان (مثلاً ۱۴:۲۰)', 'type' => 'text' ),
 				'_cat_category'   => array( 'label' => 'برچسب دسته (مثلاً «دوازدهم · فصل ۳»)', 'type' => 'text' ),
-				'_cat_free'       => array( 'label' => 'نمونه‌ی رایگان', 'type' => 'checkbox' ),
+				'_cat_access_type' => array(
+					'label'   => 'دسترسی',
+					'type'    => 'select',
+					'options' => array( 'free' => 'رایگان — همه می‌بینند', 'paid' => 'خریدنی — با کد دسترسی باز می‌شود' ),
+					'default' => 'free',
+				),
+				'_cat_price'      => array( 'label' => 'قیمت (فقط برای ویدیوی خریدنی)', 'type' => 'text' ),
+				'_cat_currency'   => array( 'label' => 'واحد پول', 'type' => 'text', 'default' => 'تومان' ),
+				'_cat_free'       => array( 'label' => 'نمونه‌ی رایگان (نشان «رایگان» روی کارت)', 'type' => 'checkbox' ),
+			),
+		),
+
+		'note' => array(
+			'title'  => 'مشخصات جزوه',
+			'note'   => 'هر جزوه دو فایل دارد — برگه‌ی خالی و همان برگه با پاسخ‌ها — که در جعبه‌ی «فایل‌های جزوه» بارگذاری می‌شوند. اینجا فقط مشخصاتش را می‌نویسی.',
+			'fields' => array(
+				'_cat_access_type' => array(
+					'label'   => 'دسترسی',
+					'type'    => 'select',
+					'options' => array( 'free' => 'رایگان — همه دانلود می‌کنند', 'paid' => 'خریدنی — با کد دسترسی باز می‌شود' ),
+					'default' => 'free',
+				),
+				'_cat_price'     => array( 'label' => 'قیمت (فقط برای جزوه‌ی خریدنی)', 'type' => 'text' ),
+				'_cat_currency'  => array( 'label' => 'واحد پول', 'type' => 'text', 'default' => 'تومان' ),
+				'_cat_subtitle'  => array( 'label' => 'زیرعنوان کوتاه', 'type' => 'text' ),
+				'_cat_pages'     => array( 'label' => 'تعداد صفحه', 'type' => 'text' ),
+				'_cat_features'  => array( 'label' => 'سرفصل‌ها (هر خط یک مورد)', 'type' => 'textarea' ),
+				'_cat_part_of_course' => array( 'label' => 'شناسه‌ی دوره‌ای که این جزوه جزئش است (اختیاری)', 'type' => 'text' ),
 			),
 		),
 		'success_video' => array(
@@ -244,6 +271,12 @@ function catalyzer_render_meta_box( $post, $meta ) {
 
 		if ( 'textarea' === $field['type'] ) {
 			echo '<textarea id="' . $id . '" name="' . $id . '" rows="5" class="widefat"' . $readonly . '>' . esc_textarea( $value ) . '</textarea>';
+		} elseif ( 'select' === $field['type'] ) {
+			echo '<select id="' . $id . '" name="' . $id . '" class="widefat">';
+			foreach ( (array) $field['options'] as $opt_value => $opt_label ) {
+				echo '<option value="' . esc_attr( $opt_value ) . '"' . selected( $value, $opt_value, false ) . '>' . esc_html( $opt_label ) . '</option>';
+			}
+			echo '</select>';
 		} elseif ( 'checkbox' === $field['type'] ) {
 			echo '<label><input type="checkbox" id="' . $id . '" name="' . $id . '" value="1"' . checked( $value, '1', false ) . '> بله</label>';
 		} else {
@@ -288,6 +321,10 @@ function catalyzer_save_meta( $post_id ) {
 		$raw = wp_unslash( $_POST[ $key ] );
 		if ( 'textarea' === $field['type'] ) {
 			update_post_meta( $post_id, $key, sanitize_textarea_field( $raw ) );
+		} elseif ( 'select' === $field['type'] ) {
+			$allowed = array_keys( (array) $field['options'] );
+			$clean   = sanitize_text_field( $raw );
+			update_post_meta( $post_id, $key, in_array( $clean, $allowed, true ) ? $clean : $allowed[0] );
 		} elseif ( '_cat_btn_url' === $key || '_cat_video_url' === $key || '_cat_sv_url' === $key ) {
 			update_post_meta( $post_id, $key, esc_url_raw( trim( $raw ) ) );
 		} else {

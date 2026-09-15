@@ -94,6 +94,7 @@ function catalyzer_customize_register( $wp ) {
 		'about'        => 'درباره و رزومه',
 		'method'       => 'متد کاتالیزور',
 		'courses'      => 'دوره‌ها',
+		'notes'        => 'جزوه‌ها',
 		'videos'       => 'ویدیوهای کلاس',
 		'success'      => 'ویدیوهای رتبه‌برترها',
 		'testimonials' => 'نظرات دانش‌آموزان',
@@ -174,6 +175,20 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_courses', 'courses_heading', 'تیتر', array( 'default' => 'پکیج آموزشیِ متناسب با مسیر خودت را انتخاب کن' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_courses', 'courses_intro', 'توضیح کوتاه', array( 'default' => 'ویدیوی کامل کلاس، جزوه و آزمون. پرداخت امن و دسترسی دائمی پس از خرید.' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_courses', 'courses_note', 'یادداشت زیر کارت‌ها', array( 'default' => '' ) );
+
+	/* ---------- جزوه‌ها ---------- */
+	$add_section( 'catalyzer_notes', 'جزوه‌ها (سربرگ بخش)', 65 );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_eyebrow', 'برچسب کوچک', array( 'default' => catalyzer_notes_default( 'notes_eyebrow' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_heading', 'تیتر', array( 'default' => catalyzer_notes_default( 'notes_heading' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_intro', 'توضیح کوتاه', array( 'default' => catalyzer_notes_default( 'notes_intro' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_count', 'تعداد جزوه در صفحه‌ی اصلی', array( 'default' => catalyzer_notes_default( 'notes_count' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_more_text', 'دکمه‌ی «همه‌ی جزوه‌ها» — متن', array( 'default' => catalyzer_notes_default( 'notes_more_text' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'notes_more_url', 'دکمه‌ی «همه‌ی جزوه‌ها» — لینک', array( 'default' => '' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_notes', 'buy_note', 'متن راهنمای خرید (روی جعبه‌ی قفل)', array(
+		'type'        => 'textarea',
+		'default'     => catalyzer_notes_default( 'buy_note' ),
+		'description' => 'همین متن روی هر جزوه و ویدیوی خریدنی دیده می‌شود.',
+	) );
 
 	/* ---------- ویدیوها ---------- */
 	$add_section( 'catalyzer_videos', 'ویدیوهای کلاس (سربرگ بخش)', 70 );

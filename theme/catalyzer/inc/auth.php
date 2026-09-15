@@ -592,6 +592,50 @@ function catalyzer_render_account_panel() {
 			<?php endif; ?>
 		</div>
 
+		<?php if ( function_exists( 'catalyzer_user_access_ids' ) ) : ?>
+			<div class="account-courses account-library">
+				<h3><?php esc_html_e( 'جزوه‌ها و ویدیوهای من', 'catalyzer' ); ?></h3>
+				<?php
+				$opened = catalyzer_user_access_ids( $user->ID );
+				if ( empty( $opened ) ) :
+					?>
+					<p class="form-note"><?php esc_html_e( 'هنوز چیزی برایت باز نشده. جزوه‌های رایگان بدون ورود هم قابل دانلودند؛ برای موارد خریدنی کد دسترسی را پایین وارد کن.', 'catalyzer' ); ?></p>
+				<?php else : ?>
+					<ul class="account-course-list">
+						<?php foreach ( $opened as $item_id ) : ?>
+							<?php
+							$is_note = 'note' === get_post_type( $item_id );
+							$files   = $is_note && function_exists( 'catalyzer_note_available_files' ) ? catalyzer_note_available_files( $item_id ) : array();
+							?>
+							<li class="account-course">
+								<span class="account-course-body">
+									<span class="account-course-title"><?php echo esc_html( get_the_title( $item_id ) ); ?></span>
+									<span class="account-course-sub"><?php echo esc_html( $is_note ? 'جزوه' : 'ویدیوی کلاس' ); ?></span>
+								</span>
+								<?php if ( $files ) : ?>
+									<span class="account-course-files">
+										<?php foreach ( $files as $file ) : ?>
+											<a class="btn btn-ghost" href="<?php echo esc_url( $file['url'] ); ?>"><?php echo esc_html( $file['label'] ); ?></a>
+										<?php endforeach; ?>
+									</span>
+								<?php else : ?>
+									<a class="btn btn-ghost account-course-open" href="<?php echo esc_url( get_permalink( $item_id ) ); ?>">
+										<?php esc_html_e( 'باز کردن', 'catalyzer' ); ?>
+									</a>
+								<?php endif; ?>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
+
+				<div class="account-code">
+					<h4><?php esc_html_e( 'کد دسترسی داری؟', 'catalyzer' ); ?></h4>
+					<?php catalyzer_redeem_notice(); ?>
+					<?php catalyzer_redeem_form( catalyzer_account_url() ); ?>
+				</div>
+			</div>
+		<?php endif; ?>
+
 		<p class="account-logout">
 			<a class="linklike" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'خروج از حساب', 'catalyzer' ); ?></a>
 		</p>

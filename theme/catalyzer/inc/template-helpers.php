@@ -86,6 +86,32 @@ function catalyzer_default_credentials() {
 }
 
 /**
+ * پیش‌فرض‌های بخش جزوه‌ها، در یک جا.
+ *
+ * «سفارشی‌سازی» پیش‌فرضِ ثبت‌شده را روی سایت رندر نمی‌کند، پس هر قالبی که این
+ * کلیدها را می‌خواند باید از همین‌جا بخواند وگرنه دو رشته از هم جدا می‌افتند —
+ * همان اشتباهی که یک بار بنر فراخوان و یک بار باکس رزومه را خالی نشان داد.
+ */
+function catalyzer_notes_default( $key ) {
+	$defaults = array(
+		'notes_eyebrow'   => 'جزوه‌ها',
+		'notes_heading'   => 'جزوه‌ها و برگه‌های تمرین',
+		'notes_intro'     => 'هر جزوه دو فایل دارد: برگه‌ی خالی برای خودت، و همان برگه با پاسخ‌های کامل.',
+		'notes_count'     => '6',
+		'notes_more_text' => 'همه‌ی جزوه‌ها',
+		'buy_note'        => 'برای تهیه‌اش پیام بده؛ بعد از هماهنگی یک کد دسترسی می‌گیری و همین‌جا واردش می‌کنی.',
+	);
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
+}
+
+/**
+ * خواندن یک کلید از بخش جزوه‌ها با پیش‌فرضِ درست.
+ */
+function catalyzer_notes_opt( $key ) {
+	return catalyzer_opt( $key, catalyzer_notes_default( $key ) );
+}
+
+/**
  * اگر لینک با # شروع شود و روی صفحه‌ی اصلی نباشیم، آدرس خانه را جلوی آن می‌گذارد
  * تا لنگرها از صفحات داخلی هم درست کار کنند.
  */
@@ -157,6 +183,10 @@ function catalyzer_icon( $name ) {
 		'aparat'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',
 		'phone'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 4 5a2 2 0 0 1 2-2Z"/></svg>',
 		'menu'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+		'lock'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+		'unlock'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/></svg>',
+		'download'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7.5 11 12 15.5 16.5 11M5 19h14"/></svg>',
+		'pdf'       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
 		'rings'     => '<svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>',
 	);
 	return isset( $icons[ $name ] ) ? $icons[ $name ] : '';
@@ -188,6 +218,7 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 		'#about'   => 'درباره',
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
+		'#notes'   => 'جزوه‌ها',
 		'#videos'  => 'ویدیوها',
 	);
 	/**
@@ -236,6 +267,7 @@ function catalyzer_footer_menu() {
 		'#about'   => 'درباره',
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
+		'#notes'   => 'جزوه‌ها',
 		'#videos'  => 'ویدیوها',
 	) );
 	echo '<nav>';
