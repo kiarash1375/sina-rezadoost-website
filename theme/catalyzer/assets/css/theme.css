@@ -704,3 +704,109 @@ body.sv-modal-open{overflow:hidden}
   .sv-grid{grid-template-columns:1fr}
   .nav-account.btn-primary{--bh:40px;padding-inline:16px;font-size:.85rem}
 }
+
+/* ---------------------------------------------------------------------------
+ * کتابخانه: جزوه‌ها، قفل و دانلود
+ * ------------------------------------------------------------------------ */
+.notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.note{
+  display:flex;flex-direction:column;gap:14px;
+  padding:20px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg-inset);transition:border-color .2s,transform .2s;
+}
+.note:hover{border-color:var(--line-strong);transform:translateY(-4px)}
+.note-head{display:flex;gap:14px;align-items:flex-start;color:inherit;text-decoration:none}
+.note-mark{
+  flex:none;width:44px;height:44px;border-radius:12px;
+  display:grid;place-items:center;
+  border:1px solid var(--line-strong);color:var(--accent);
+}
+.note-mark svg{width:22px;height:22px}
+.note.is-locked .note-mark{color:var(--text-mute)}
+.note-titles{display:flex;flex-direction:column;gap:5px;min-width:0}
+.note-titles .cat{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.note-titles h3{font-size:1.02rem;font-weight:700;margin:0}
+.note-sub{font-size:.86rem;color:var(--text-mute);line-height:1.7}
+.note-facts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;font-size:.82rem;color:var(--text-mute)}
+.note-tag{padding:3px 10px;border-radius:999px;font-size:.76rem;font-weight:600;line-height:1.6}
+.note-tag-free{background:rgba(80,190,120,.12);border:1px solid rgba(80,190,120,.35);color:#8fd6a8}
+.note-tag-paid{background:rgba(240,130,30,.10);border:1px solid rgba(240,130,30,.35);color:var(--accent-2)}
+.note-price{font-family:var(--font-mono);color:var(--text)}
+.note-files{display:grid;gap:8px}
+.note-dl{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border:1px solid var(--line-strong);border-radius:var(--radius);
+  color:var(--text);text-decoration:none;font-size:.9rem;font-weight:600;
+  transition:background .2s,border-color .2s,color .2s;
+}
+.note-dl:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.note-dl svg{width:18px;height:18px;flex:none}
+.note-dl small{margin-inline-start:auto;font-weight:400;font-size:.78rem;opacity:.8}
+.note-open{--bh:42px;align-self:flex-start}
+.thumb.is-locked > img{filter:grayscale(.5) brightness(.55)}
+.thumb .tag-lock{background:rgba(240,130,30,.16);border:1px solid rgba(240,130,30,.45);color:var(--accent-2)}
+
+/* تک‌صفحه‌ی جزوه */
+.note-single{display:grid;grid-template-columns:1.6fr 1fr;gap:34px;align-items:start}
+.note-cover img{width:100%;height:auto;border-radius:var(--radius);display:block}
+.note-features{margin-top:30px}
+.note-features h2{font-size:1.15rem;margin:0 0 14px}
+.note-features ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.note-features li{display:flex;gap:10px;align-items:flex-start;line-height:1.9}
+.note-features .tick{flex:none;color:var(--accent);margin-top:4px}
+.note-features .tick svg{width:16px;height:16px}
+.note-single-side{display:grid;gap:18px;position:sticky;top:96px}
+.note-download-box{
+  padding:20px;border:1px solid var(--line-strong);border-radius:var(--radius);
+  background:var(--bg-inset);display:grid;gap:14px;
+}
+.note-download-box h2{display:flex;align-items:center;gap:9px;font-size:1.05rem;margin:0}
+.note-download-box .tick{color:#8fd6a8;display:inline-flex}
+.note-download-box .tick svg{width:20px;height:20px}
+
+/* جعبه‌ی قفل */
+.lock-panel{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:22px;border:1px solid rgba(240,130,30,.35);border-radius:var(--radius);
+  background:rgba(240,130,30,.06);
+}
+.lock-mark{flex:none;color:var(--accent-2)}
+.lock-mark svg{width:26px;height:26px}
+.lock-body{display:grid;gap:12px;min-width:0;flex:1}
+.lock-body h2{font-size:1.1rem;margin:0}
+.lock-price{margin:0;font-family:var(--font-mono);font-size:1.5rem;color:var(--text)}
+.lock-price span{font-size:.85rem;color:var(--text-mute);margin-inline-start:6px}
+.lock-how{margin:0;font-size:.9rem;line-height:1.9;color:var(--text-mute)}
+.lock-contact{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+.lock-contact .btn{--bh:40px;padding-inline:16px;font-size:.86rem;gap:8px}
+.lock-contact svg{width:17px;height:17px}
+.lock-login{margin:0;font-size:.88rem;color:var(--text-mute)}
+.lesson-lock{margin-top:26px;max-width:620px}
+
+/* فرم کد */
+.code-form{display:grid;gap:8px}
+.code-form label{font-size:.86rem;color:var(--text-mute)}
+.code-row{display:flex;gap:10px;flex-wrap:wrap}
+.code-row input{
+  flex:1;min-width:190px;height:46px;padding:0 14px;
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;
+}
+.code-row input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.code-row .btn{--bh:46px;white-space:nowrap}
+.account-code{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line)}
+.account-code h4{margin:0 0 10px;font-size:.98rem}
+.account-course-files{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.account-course-files .btn{--bh:38px;padding-inline:14px;font-size:.84rem}
+
+@media (max-width:900px){
+  .notes-grid{grid-template-columns:repeat(2,1fr)}
+  .note-single{grid-template-columns:1fr}
+  .note-single-side{position:static}
+}
+@media (max-width:620px){
+  .notes-grid{grid-template-columns:1fr}
+  .lock-panel{flex-direction:column}
+  .account-course-files{justify-content:flex-start;grid-column:1 / -1}
+}
