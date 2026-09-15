@@ -7,8 +7,8 @@
  *   ۱. هر جزوه یا ویدیو یا «رایگان» است یا «قفل‌دار».
  *   ۲. قفل با هر چیزی باز می‌شود که catalyzer_grant_access() را صدا بزند —
  *      امروز کدِ دسترسی (inc/access-codes.php)، فردا تأیید رسید یا درگاه.
- *   ۳. فایل جزوه هرگز آدرس عمومی ندارد؛ از uploads/catalyzer-library بیرون
- *      کشیده می‌شود و فقط از راه catalyzer_download_url() سرو می‌شود.
+ *   ۳. فایل جزوه هرگز آدرس عمومی ندارد؛ بیرون از ریشه‌ی وب ذخیره می‌شود و
+ *      فقط از راه catalyzer_download_url() سرو می‌شود.
  *
  * دوره‌ها انبارِ خودشان را دارند (inc/enrollment.php) و دست‌نخورده می‌مانند؛
  * catalyzer_user_can_access() بر اساس نوع محتوا تصمیم می‌گیرد کجا را بخواند.
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /** متای کاربر: شناسه‌ی جزوه‌ها و ویدیوهایی که برایش باز شده‌اند. */
 const CATALYZER_ACCESS_META = '_cat_access';
 
-/** نام پوشه‌ی خصوصی داخل uploads. */
+/** نام پوشه‌ی فایل‌ها. */
 const CATALYZER_LIB_DIR = 'catalyzer-library';
 
 /** کلید کوئری برای دانلود. */
@@ -256,21 +256,66 @@ function catalyzer_revoke_access( $user_id, $post_id ) {
  * ---------------------------------------------------------------------- */
 
 /**
- * مسیر و آدرس پوشه‌ی خصوصی.
+ * مسیر پوشه‌ای که فایل‌ها در آن می‌نشینند.
  *
- * @return array{dir:string,exists:bool}
+ * ترتیب انتخاب، از امن به ناامن:
+ *
+ *   ۱. مسیری که در wp-config یا با فیلتر تعیین شده باشد.
+ *   ۲. یک پله بیرونِ ریشه‌ی وب — آنجا هیچ آدرسی به فایل نمی‌رسد، نقطه.
+ *   ۳. آخرین راه: داخل uploads با .htaccess.
+ *
+ * راه سوم روی این هاست کافی نبود: لایت‌اسپید فایل ایستا را پیش از خواندن
+ * .htaccess تحویل می‌داد و PDFِ «خریدنی» با آدرس مستقیم دانلود می‌شد. برای
+ * همین پیش‌فرض بیرون از ریشه‌ی وب است و اگر مجبور شدیم به uploads برگردیم،
+ * قالب در پیشخوان هشدار می‌دهد.
+ *
+ * @return array{dir:string,exposed:bool}
  */
 function catalyzer_library_dir() {
+
+	$custom = defined( 'CATALYZER_LIB_PATH' ) ? CATALYZER_LIB_PATH : '';
+	/**
+	 * مسیر دلخواه برای فایل‌های کتابخانه.
+	 *
+	 * @param string $custom مسیر مطلق، یا رشته‌ی خالی برای رفتار پیش‌فرض.
+	 */
+	$custom = (string) apply_filters( 'catalyzer_library_path', $custom );
+	if ( $custom ) {
+		$custom = untrailingslashit( $custom );
+		return array( 'dir' => $custom, 'exposed' => catalyzer_path_is_public( $custom ) );
+	}
+
+	$outside = dirname( untrailingslashit( ABSPATH ) ) . '/' . CATALYZER_LIB_DIR;
+	if ( is_dir( $outside ) || ( is_writable( dirname( $outside ) ) && wp_mkdir_p( $outside ) ) ) {
+		return array( 'dir' => $outside, 'exposed' => false );
+	}
+
 	$uploads = wp_get_upload_dir();
-	$dir     = trailingslashit( $uploads['basedir'] ) . CATALYZER_LIB_DIR;
-	return array( 'dir' => $dir, 'exists' => is_dir( $dir ) );
+	return array(
+		'dir'     => trailingslashit( $uploads['basedir'] ) . CATALYZER_LIB_DIR,
+		'exposed' => true,
+	);
 }
 
 /**
- * ساخت پوشه‌ی خصوصی و بستنش به روی وب.
+ * آیا این مسیر از راه وب قابل دسترسی است؟
  *
- * دو لایه: .htaccess برای آپاچی و لایت‌اسپید، و index.php خالی تا فهرست
- * پوشه لو نرود اگر روزی .htaccess نادیده گرفته شد.
+ * فقط یک مقایسه‌ی مسیر است: هر چیزی داخل ریشه‌ی وب، آدرس دارد.
+ *
+ * @param string $path مسیر مطلق.
+ * @return bool
+ */
+function catalyzer_path_is_public( $path ) {
+	$root = wp_normalize_path( untrailingslashit( ABSPATH ) );
+	$path = wp_normalize_path( untrailingslashit( $path ) );
+	return 0 === strpos( $path . '/', $root . '/' );
+}
+
+/**
+ * ساخت پوشه و بستنش، به‌اضافه‌ی کوچ دادن فایل‌های نسخه‌ی قبل.
+ *
+ * .htaccess و index.php هنوز نوشته می‌شوند — روی سرورهایی که رعایتشان می‌کنند
+ * یک لایه‌ی اضافه‌اند و ضرری ندارند — ولی دیگر تنها خط دفاع نیستند.
  *
  * @return bool آیا پوشه آماده است.
  */
@@ -293,8 +338,52 @@ function catalyzer_prepare_library_dir() {
 		file_put_contents( $index, "<?php\n// Silence is golden.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
 
+	catalyzer_migrate_library_files( $dir );
+
 	return is_dir( $dir );
 }
+
+/**
+ * فایل‌هایی که نسخه‌ی قبل داخل uploads گذاشته بود را به پوشه‌ی امن ببر.
+ *
+ * @param string $dir پوشه‌ی مقصد.
+ */
+function catalyzer_migrate_library_files( $dir ) {
+	$uploads = wp_get_upload_dir();
+	$old     = trailingslashit( $uploads['basedir'] ) . CATALYZER_LIB_DIR;
+
+	if ( wp_normalize_path( $old ) === wp_normalize_path( $dir ) || ! is_dir( $old ) ) {
+		return;
+	}
+
+	foreach ( (array) glob( $old . '/*.pdf' ) as $file ) {
+		$target = $dir . '/' . basename( $file );
+		if ( ! file_exists( $target ) ) {
+			rename( $file, $target ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		} else {
+			wp_delete_file( $file );
+		}
+	}
+}
+
+/**
+ * اگر فایل‌ها ناچاراً جایی نشسته‌اند که آدرس عمومی دارد، مدیر باید بداند.
+ */
+function catalyzer_library_exposure_notice() {
+	if ( ! current_user_can( 'edit_others_posts' ) ) {
+		return;
+	}
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || false === strpos( (string) $screen->id, 'note' ) ) {
+		return;
+	}
+	$lib = catalyzer_library_dir();
+	if ( empty( $lib['exposed'] ) ) {
+		return;
+	}
+	echo '<div class="notice notice-error"><p><strong>هشدار:</strong> فایل‌های جزوه‌ها داخل پوشه‌ی uploads ذخیره می‌شوند و ممکن است با آدرس مستقیم قابل دانلود باشند. برای رفعش یک خط به wp-config.php اضافه کن: <code>define( \'CATALYZER_LIB_PATH\', \'/مسیر/بیرون/از/public_html/catalyzer-library\' );</code></p></div>';
+}
+add_action( 'admin_notices', 'catalyzer_library_exposure_notice' );
 
 /**
  * جزوه‌ها دو فایل دارند: برگه‌ی خالی و همان برگه با پاسخ‌ها.
@@ -510,7 +599,8 @@ function catalyzer_render_file_box( $post ) {
 	wp_nonce_field( 'catalyzer_note_files', 'catalyzer_note_files_nonce' );
 
 	$max = size_format( wp_max_upload_size() );
-	echo '<p style="margin:0 0 12px;color:#666">فایل‌ها بیرون از دسترس عمومی ذخیره می‌شوند و فقط از راه صفحه‌ی جزوه دانلود می‌شوند. بیشترین حجم مجاز این سرور: ' . esc_html( $max ) . '</p>';
+	$lib = catalyzer_library_dir();
+	echo '<p style="margin:0 0 12px;color:#666">فایل‌ها ' . ( empty( $lib['exposed'] ) ? 'بیرون از ریشه‌ی وب' : 'داخل uploads' ) . ' ذخیره می‌شوند و فقط از راه صفحه‌ی جزوه دانلود می‌شوند. بیشترین حجم مجاز این سرور: ' . esc_html( $max ) . '</p>';
 
 	echo '<div style="display:grid;gap:18px">';
 	foreach ( catalyzer_note_slots() as $slot => $info ) {
