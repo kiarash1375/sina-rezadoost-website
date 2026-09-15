@@ -20,6 +20,13 @@ $cat_label = function_exists( 'catalyzer_lesson_category_label' ) ? catalyzer_le
 $cat_embed = function_exists( 'catalyzer_lesson_embed' ) ? catalyzer_lesson_embed( $cat_id ) : '';
 $cat_thumb = function_exists( 'catalyzer_lesson_thumb' ) ? catalyzer_lesson_thumb( $cat_id ) : '';
 
+// ویدیوی قفل‌دار در لایت‌باکس پخش نمی‌شود؛ کارت به صفحه‌ی خودش می‌برد تا
+// کاربر راه باز کردنش را ببیند.
+$cat_locked = function_exists( 'catalyzer_is_locked' ) && catalyzer_is_locked( $cat_id ) && ! catalyzer_user_can_access( $cat_id );
+if ( $cat_locked ) {
+	$cat_embed = '';
+}
+
 $cat_slugs = array();
 foreach ( (array) get_the_terms( $cat_id, 'lesson_cat' ) as $cat_term ) {
 	if ( $cat_term instanceof WP_Term ) {
@@ -35,12 +42,14 @@ foreach ( (array) get_the_terms( $cat_id, 'lesson_cat' ) as $cat_term ) {
 <?php else : ?>
 	<a class="video" href="<?php the_permalink(); ?>" data-cats="<?php echo esc_attr( implode( ' ', $cat_slugs ) ); ?>">
 <?php endif; ?>
-		<div class="thumb">
+		<div class="thumb<?php echo $cat_locked ? ' is-locked' : ''; ?>">
 			<?php echo $cat_thumb; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-			<?php if ( $cat_free ) : ?>
+			<?php if ( $cat_locked ) : ?>
+				<span class="tag tag-lock"><?php esc_html_e( 'خریدنی', 'catalyzer' ); ?></span>
+			<?php elseif ( $cat_free ) : ?>
 				<span class="tag"><?php esc_html_e( 'رایگان', 'catalyzer' ); ?></span>
 			<?php endif; ?>
-			<span class="play"><?php echo catalyzer_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+			<span class="play"><?php echo catalyzer_icon( $cat_locked ? 'lock' : 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 			<?php if ( $cat_dur ) : ?>
 				<span class="dur"><?php echo esc_html( $cat_dur ); ?></span>
 			<?php endif; ?>
