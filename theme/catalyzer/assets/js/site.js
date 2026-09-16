@@ -190,7 +190,8 @@
       phone: elEcho.textContent,
       code: code,
       name: elName ? elName.value : "",
-      field: elField ? elField.value : ""
+      field: elField ? elField.value : "",
+      redirect: (document.getElementById("catAuth") || {}).dataset ? document.getElementById("catAuth").dataset.redirect || "" : ""
     })
       .then(function (res) {
         if (!res || !res.success) {
