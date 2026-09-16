@@ -1,10 +1,10 @@
 <?php
 /**
- * کتابخانه‌ی سایت: جزوه‌ها و ویدیوها، قفلشان، و دانلود محافظت‌شده.
+ * کتابخانه‌ی سایت: جزوه‌ها، آزمون‌ها و ویدیوها، قفلشان، و دانلود محافظت‌شده.
  *
  * یک موتور دسترسی مشترک برای هر نوع محتوای قفل‌دار:
  *
- *   ۱. هر جزوه یا ویدیو یا «رایگان» است یا «قفل‌دار».
+ *   ۱. هر جزوه یا آزمون یا ویدیو یا «رایگان» است یا «قفل‌دار».
  *   ۲. قفل با هر چیزی باز می‌شود که catalyzer_grant_access() را صدا بزند —
  *      امروز کدِ دسترسی (inc/access-codes.php)، فردا تأیید رسید یا درگاه.
  *   ۳. فایل جزوه هرگز آدرس عمومی ندارد؛ بیرون از ریشه‌ی وب ذخیره می‌شود و
@@ -30,11 +30,11 @@ const CATALYZER_LIB_DIR = 'catalyzer-library';
 const CATALYZER_DL_QUERY = 'catalyzer_file';
 
 /* -------------------------------------------------------------------------
- * نوع محتوا: جزوه
+ * نوع محتوا: جزوه و آزمون
  * ---------------------------------------------------------------------- */
 
 /**
- * ثبت «جزوه» و دسته‌بندی‌اش.
+ * ثبت «جزوه» و «آزمون» و دسته‌بندی‌هایشان.
  *
  * روی همان init‌ای سوار می‌شود که بقیه‌ی نوع‌های محتوا ثبت می‌شوند، با اولویت
  * پایین‌تر تا ترتیب منوی پیشخوان به‌هم نریزد.
@@ -53,6 +53,8 @@ function catalyzer_register_library() {
 			'search_items'  => 'جستجوی جزوه',
 			'not_found'     => 'جزوه‌ای یافت نشد',
 			'menu_name'     => 'جزوه‌ها',
+			'featured_image'     => 'عکس جزوه',
+			'set_featured_image' => 'انتخاب عکس جزوه',
 		),
 		'public'        => true,
 		'has_archive'   => true,
@@ -77,14 +79,76 @@ function catalyzer_register_library() {
 		'show_in_rest'      => true,
 		'rewrite'           => array( 'slug' => 'note-category', 'with_front' => false ),
 	) );
+
+	register_post_type( 'exam', array(
+		'labels'        => array(
+			'name'               => 'آزمون‌ها',
+			'singular_name'      => 'آزمون',
+			'add_new'            => 'افزودن آزمون',
+			'add_new_item'       => 'افزودن آزمون جدید',
+			'edit_item'          => 'ویرایش آزمون',
+			'new_item'           => 'آزمون جدید',
+			'view_item'          => 'مشاهده‌ی آزمون',
+			'search_items'       => 'جستجوی آزمون',
+			'not_found'          => 'آزمونی یافت نشد',
+			'menu_name'          => 'آزمون‌ها',
+			'featured_image'     => 'عکس آزمون',
+			'set_featured_image' => 'انتخاب عکس آزمون',
+		),
+		'public'        => true,
+		'has_archive'   => true,
+		'menu_icon'     => 'dashicons-clipboard',
+		'menu_position' => 21,
+		'rewrite'       => array( 'slug' => 'exams', 'with_front' => false ),
+		'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
+		'show_in_rest'  => true,
+	) );
+
+	register_taxonomy( 'exam_cat', array( 'exam' ), array(
+		'labels'            => array(
+			'name'          => 'دسته‌بندی آزمون‌ها',
+			'singular_name' => 'دسته‌بندی',
+			'add_new_item'  => 'افزودن دسته‌بندی',
+			'edit_item'     => 'ویرایش دسته‌بندی',
+			'menu_name'     => 'دسته‌بندی‌ها',
+		),
+		'public'            => true,
+		'hierarchical'      => false,
+		'show_admin_column' => true,
+		'show_in_rest'      => true,
+		'rewrite'           => array( 'slug' => 'exam-category', 'with_front' => false ),
+	) );
 }
 add_action( 'init', 'catalyzer_register_library', 5 );
+
+/**
+ * برچسب «تصویر شاخص» را برای هر نوع، به زبان خودش می‌نویسد.
+ *
+ * ادمین باید بدون فکر کردن بفهمد این جعبه همان عکسِ روی کارت است.
+ *
+ * @param string $content متن فعلی جعبه.
+ * @return string
+ */
+function catalyzer_featured_image_hint( $content ) {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	$hints  = array(
+		'note'   => 'عکس روی کارتِ جزوه — جلد یا تصویر صفحه‌ی اول.',
+		'exam'   => 'عکس روی کارتِ آزمون.',
+		'course' => 'عکس روی کارتِ دوره.',
+		'lesson' => 'بندانگشتی ویدیو. اگر خالی بماند، از آپارات گرفته می‌شود.',
+	);
+	if ( $screen && isset( $hints[ $screen->post_type ] ) ) {
+		$content .= '<p style="margin-top:8px;color:#666">' . esc_html( $hints[ $screen->post_type ] ) . '</p>';
+	}
+	return $content;
+}
+add_filter( 'admin_post_thumbnail_html', 'catalyzer_featured_image_hint' );
 
 /**
  * جزوه هم مثل بقیه با ویرایشگر کلاسیک ویرایش می‌شود.
  */
 function catalyzer_library_classic_editor( $use_block, $post_type ) {
-	return 'note' === $post_type ? false : $use_block;
+	return in_array( $post_type, array( 'note', 'exam' ), true ) ? false : $use_block;
 }
 add_filter( 'use_block_editor_for_post_type', 'catalyzer_library_classic_editor', 10, 2 );
 
@@ -98,7 +162,30 @@ add_filter( 'use_block_editor_for_post_type', 'catalyzer_library_classic_editor'
  * @return string[]
  */
 function catalyzer_lockable_types() {
-	return (array) apply_filters( 'catalyzer_lockable_types', array( 'note', 'lesson' ) );
+	return (array) apply_filters( 'catalyzer_lockable_types', array( 'note', 'exam', 'lesson' ) );
+}
+
+/**
+ * نوع‌هایی که فایل PDF دارند: جزوه و آزمون.
+ *
+ * @return string[]
+ */
+function catalyzer_filed_types() {
+	return (array) apply_filters( 'catalyzer_filed_types', array( 'note', 'exam' ) );
+}
+
+/**
+ * بخش‌های کتابخانه، در یک جا — منوی پنل کاربری و میان‌برها از همین می‌خوانند.
+ *
+ * @return array<string,array{label:string,single:string,icon:string}>
+ */
+function catalyzer_library_sections() {
+	return array(
+		'note'   => array( 'label' => 'جزوه‌ها',        'single' => 'جزوه',        'icon' => 'pdf' ),
+		'exam'   => array( 'label' => 'آزمون‌ها',       'single' => 'آزمون',       'icon' => 'clipboard' ),
+		'lesson' => array( 'label' => 'ویدیوهای کلاس', 'single' => 'ویدیوی کلاس', 'icon' => 'play-o' ),
+		'course' => array( 'label' => 'دوره‌ها',         'single' => 'دوره',        'icon' => 'hexagon' ),
+	);
 }
 
 /**
@@ -374,7 +461,7 @@ function catalyzer_library_exposure_notice() {
 		return;
 	}
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-	if ( ! $screen || false === strpos( (string) $screen->id, 'note' ) ) {
+	if ( ! $screen || ( false === strpos( (string) $screen->id, 'note' ) && false === strpos( (string) $screen->id, 'exam' ) ) ) {
 		return;
 	}
 	$lib = catalyzer_library_dir();
@@ -392,11 +479,22 @@ add_action( 'admin_notices', 'catalyzer_library_exposure_notice' );
  *
  * @return array<string,array{label:string,meta:string}>
  */
-function catalyzer_note_slots() {
+function catalyzer_note_slots( $post_type = 'note' ) {
+	$first = 'exam' === $post_type ? 'برگه‌ی سؤال' : 'فایل سفید';
 	return array(
-		'blank'   => array( 'label' => 'فایل سفید', 'meta' => '_cat_file_blank' ),
+		'blank'   => array( 'label' => $first,     'meta' => '_cat_file_blank' ),
 		'answers' => array( 'label' => 'پاسخنامه', 'meta' => '_cat_file_answers' ),
 	);
+}
+
+/**
+ * خانه‌های فایلِ یک نوشته، با برچسب درستِ نوع خودش.
+ *
+ * @param int|WP_Post $post نوشته.
+ */
+function catalyzer_post_slots( $post = null ) {
+	$post = get_post( $post );
+	return catalyzer_note_slots( $post ? $post->post_type : 'note' );
 }
 
 /**
@@ -407,7 +505,7 @@ function catalyzer_note_slots() {
  */
 function catalyzer_note_filename( $post = null, $slot = 'blank' ) {
 	$post  = get_post( $post );
-	$slots = catalyzer_note_slots();
+	$slots = catalyzer_post_slots( $post );
 	if ( ! $post || ! isset( $slots[ $slot ] ) ) {
 		return '';
 	}
@@ -455,7 +553,7 @@ function catalyzer_note_available_files( $post = null ) {
 	if ( ! $post ) {
 		return $out;
 	}
-	foreach ( catalyzer_note_slots() as $slot => $info ) {
+	foreach ( catalyzer_post_slots( $post ) as $slot => $info ) {
 		if ( ! catalyzer_note_path( $post, $slot ) ) {
 			continue;
 		}
@@ -514,9 +612,8 @@ function catalyzer_serve_download() {
 		return;
 	}
 
-	$slot  = (string) get_query_var( 'part' );
-	$slots = catalyzer_note_slots();
-	if ( ! isset( $slots[ $slot ] ) ) {
+	$slot = (string) get_query_var( 'part' );
+	if ( ! in_array( $slot, array( 'blank', 'answers' ), true ) ) {
 		$slot = 'blank';
 	}
 
@@ -526,17 +623,18 @@ function catalyzer_serve_download() {
 	}
 
 	$post = get_post( $post_id );
-	if ( ! $post || 'note' !== $post->post_type || 'publish' !== $post->post_status ) {
-		wp_die( esc_html__( 'این جزوه در دسترس نیست.', 'catalyzer' ), 404 );
+	if ( ! $post || ! in_array( $post->post_type, catalyzer_filed_types(), true ) || 'publish' !== $post->post_status ) {
+		wp_die( esc_html__( 'این فایل در دسترس نیست.', 'catalyzer' ), 404 );
 	}
 
 	if ( ! catalyzer_user_can_access( $post ) ) {
-		wp_die( esc_html__( 'این جزوه برای حساب تو باز نشده است.', 'catalyzer' ), 403 );
+		wp_die( esc_html__( 'این مورد برای حساب تو باز نشده است.', 'catalyzer' ), 403 );
 	}
 
-	$path = catalyzer_note_path( $post, $slot );
+	$slots = catalyzer_post_slots( $post );
+	$path  = catalyzer_note_path( $post, $slot );
 	if ( ! $path ) {
-		wp_die( esc_html__( 'فایل این جزوه هنوز بارگذاری نشده است.', 'catalyzer' ), 404 );
+		wp_die( esc_html__( 'فایل این مورد هنوز بارگذاری نشده است.', 'catalyzer' ), 404 );
 	}
 
 	$name = sanitize_file_name( get_the_title( $post ) . ' — ' . $slots[ $slot ]['label'] );
@@ -576,7 +674,7 @@ add_action( 'template_redirect', 'catalyzer_serve_download', 1 );
  */
 function catalyzer_library_form_enctype() {
 	global $post;
-	if ( $post && 'note' === $post->post_type ) {
+	if ( $post && in_array( $post->post_type, catalyzer_filed_types(), true ) ) {
 		echo ' enctype="multipart/form-data"';
 	}
 }
@@ -586,7 +684,11 @@ add_action( 'post_edit_form_tag', 'catalyzer_library_form_enctype' );
  * جعبه‌ی «فایل‌های جزوه».
  */
 function catalyzer_library_file_box() {
-	add_meta_box( 'catalyzer_note_files', 'فایل‌های جزوه', 'catalyzer_render_file_box', 'note', 'normal', 'high' );
+	$titles = array( 'note' => 'فایل‌های جزوه', 'exam' => 'فایل‌های آزمون' );
+	foreach ( catalyzer_filed_types() as $type ) {
+		$title = isset( $titles[ $type ] ) ? $titles[ $type ] : 'فایل‌ها';
+		add_meta_box( 'catalyzer_note_files', $title, 'catalyzer_render_file_box', $type, 'normal', 'high' );
+	}
 }
 add_action( 'add_meta_boxes', 'catalyzer_library_file_box' );
 
@@ -603,7 +705,7 @@ function catalyzer_render_file_box( $post ) {
 	echo '<p style="margin:0 0 12px;color:#666">فایل‌ها ' . ( empty( $lib['exposed'] ) ? 'بیرون از ریشه‌ی وب' : 'داخل uploads' ) . ' ذخیره می‌شوند و فقط از راه صفحه‌ی جزوه دانلود می‌شوند. بیشترین حجم مجاز این سرور: ' . esc_html( $max ) . '</p>';
 
 	echo '<div style="display:grid;gap:18px">';
-	foreach ( catalyzer_note_slots() as $slot => $info ) {
+	foreach ( catalyzer_post_slots( $post ) as $slot => $info ) {
 		$current = catalyzer_note_filename( $post, $slot );
 		$size    = catalyzer_note_filesize( $post, $slot );
 		$id      = 'cat_file_' . $slot;
@@ -646,7 +748,7 @@ function catalyzer_save_note_files( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
-	if ( ! current_user_can( 'edit_post', $post_id ) || 'note' !== get_post_type( $post_id ) ) {
+	if ( ! current_user_can( 'edit_post', $post_id ) || ! in_array( get_post_type( $post_id ), catalyzer_filed_types(), true ) ) {
 		return;
 	}
 	if ( ! catalyzer_prepare_library_dir() ) {
@@ -656,7 +758,7 @@ function catalyzer_save_note_files( $post_id ) {
 	$lib     = catalyzer_library_dir();
 	$deletes = isset( $_POST['cat_file_delete'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['cat_file_delete'] ) ) : array();
 
-	foreach ( catalyzer_note_slots() as $slot => $info ) {
+	foreach ( catalyzer_post_slots( $post_id ) as $slot => $info ) {
 
 		// حذف خواسته‌شده.
 		if ( in_array( $slot, $deletes, true ) ) {
@@ -677,7 +779,7 @@ function catalyzer_save_note_files( $post_id ) {
 			continue; // فقط PDF.
 		}
 
-		$name = sprintf( 'note-%d-%s-%s.pdf', (int) $post_id, $slot, wp_generate_password( 8, false, false ) );
+		$name = sprintf( '%s-%d-%s-%s.pdf', get_post_type( $post_id ), (int) $post_id, $slot, wp_generate_password( 8, false, false ) );
 		$dest = $lib['dir'] . '/' . $name;
 
 		if ( ! move_uploaded_file( $_FILES[ $field ]['tmp_name'], $dest ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
@@ -700,10 +802,10 @@ add_action( 'save_post', 'catalyzer_save_note_files' );
  * @param int $post_id شناسه‌ی نوشته.
  */
 function catalyzer_delete_note_files( $post_id ) {
-	if ( 'note' !== get_post_type( $post_id ) ) {
+	if ( ! in_array( get_post_type( $post_id ), catalyzer_filed_types(), true ) ) {
 		return;
 	}
-	foreach ( array_keys( catalyzer_note_slots() ) as $slot ) {
+	foreach ( array( 'blank', 'answers' ) as $slot ) {
 		$path = catalyzer_note_path( $post_id, $slot );
 		if ( $path ) {
 			wp_delete_file( $path );
@@ -727,6 +829,7 @@ function catalyzer_note_columns( $cols ) {
 	return $out;
 }
 add_filter( 'manage_note_posts_columns', 'catalyzer_note_columns' );
+add_filter( 'manage_exam_posts_columns', 'catalyzer_note_columns' );
 
 function catalyzer_note_column_content( $col, $post_id ) {
 	if ( 'cat_access' === $col ) {
@@ -747,7 +850,7 @@ function catalyzer_note_column_content( $col, $post_id ) {
 			echo '—';
 			return;
 		}
-		$slots  = catalyzer_note_slots();
+		$slots  = catalyzer_post_slots( $post_id );
 		$labels = array_map( function ( $s ) use ( $slots ) {
 			return $slots[ $s ]['label'];
 		}, $have );
@@ -755,6 +858,7 @@ function catalyzer_note_column_content( $col, $post_id ) {
 	}
 }
 add_action( 'manage_note_posts_custom_column', 'catalyzer_note_column_content', 10, 2 );
+add_action( 'manage_exam_posts_custom_column', 'catalyzer_note_column_content', 10, 2 );
 
 /* -------------------------------------------------------------------------
  * شمارش دانلود

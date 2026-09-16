@@ -393,6 +393,24 @@ function catalyzer_ajax_send_otp() {
 add_action( 'wp_ajax_nopriv_catalyzer_send_otp', 'catalyzer_ajax_send_otp' );
 add_action( 'wp_ajax_catalyzer_send_otp', 'catalyzer_ajax_send_otp' );
 
+/**
+ * فقط آدرس‌های داخل همین سایت را برمی‌گرداند؛ هر چیز دیگری خالی می‌شود.
+ *
+ * @param string $url آدرس خام.
+ * @return string
+ */
+function catalyzer_safe_redirect_url( $url ) {
+	$url = trim( (string) $url );
+	if ( '' === $url ) {
+		return '';
+	}
+	$host = wp_parse_url( $url, PHP_URL_HOST );
+	if ( $host && strtolower( $host ) !== strtolower( (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) ) {
+		return '';
+	}
+	return esc_url_raw( $url );
+}
+
 function catalyzer_ajax_verify_otp() {
 	check_ajax_referer( 'catalyzer_auth', 'nonce' );
 
@@ -400,10 +418,15 @@ function catalyzer_ajax_verify_otp() {
 	$code  = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : '';
 	$name  = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
 	$field = isset( $_POST['field'] ) ? sanitize_text_field( wp_unslash( $_POST['field'] ) ) : '';
+	$back  = isset( $_POST['redirect'] ) ? catalyzer_safe_redirect_url( wp_unslash( $_POST['redirect'] ) ) : '';
 
 	$result = catalyzer_verify_otp( $phone, $code, $name, $field );
 	if ( is_wp_error( $result ) ) {
 		catalyzer_ajax_fail( $result );
+	}
+	// کاربری که از روی یک جزوه یا آزمون آمده، بعد از ورود به همان‌جا برمی‌گردد.
+	if ( $back ) {
+		$result['redirect'] = $back;
 	}
 	wp_send_json_success( $result );
 }
@@ -467,8 +490,11 @@ add_shortcode( 'catalyzer_account', 'catalyzer_account_shortcode' );
 
 function catalyzer_render_auth_form() {
 	$test = catalyzer_sms_is_test_mode();
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$back = isset( $_GET['redirect_to'] ) ? esc_url_raw( wp_unslash( $_GET['redirect_to'] ) ) : '';
+	$back = catalyzer_safe_redirect_url( $back );
 	?>
-	<div class="auth-card" id="catAuth">
+	<div class="auth-card" id="catAuth" data-redirect="<?php echo esc_url( $back ); ?>">
 		<div class="auth-head">
 			<p class="eyebrow"><?php esc_html_e( 'ورود و ثبت‌نام', 'catalyzer' ); ?></p>
 			<h2><?php esc_html_e( 'با شماره‌ی موبایل وارد شو', 'catalyzer' ); ?></h2>
@@ -518,99 +544,114 @@ function catalyzer_render_auth_form() {
 	<?php
 }
 
+/**
+ * آیا پروفایل کاربر هنوز ناقص است؟
+ *
+ * ثبت‌نام فقط شماره می‌گیرد؛ نام و رشته بعدش پر می‌شوند. تا وقتی پر نشده‌اند،
+ * پنل مستقیم صفحه‌ی ویرایش را باز می‌کند.
+ *
+ * @param WP_User $user کاربر.
+ * @return bool
+ */
+function catalyzer_profile_incomplete( $user ) {
+	$name  = trim( (string) $user->display_name );
+	$phone = (string) get_user_meta( $user->ID, '_cat_phone', true );
+	$field = (string) get_user_meta( $user->ID, '_cat_field', true );
+	return ( '' === $name || $name === $phone || '' === $field );
+}
+
+/**
+ * پنل کاربری.
+ *
+ * دو نما دارد: داشبورد (پیش‌فرض) و «ویرایش اطلاعات». فرم ویرایش دیگر همیشه باز
+ * نیست — فقط بار اول که پروفایل ناقص است، یا وقتی خود کاربر رویش کلیک کند.
+ */
 function catalyzer_render_account_panel() {
-	$user  = wp_get_current_user();
-	$phone = get_user_meta( $user->ID, '_cat_phone', true );
-	$field = get_user_meta( $user->ID, '_cat_field', true );
-	$done  = isset( $_GET['updated'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	$user = wp_get_current_user();
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : '';
+	$done = isset( $_GET['updated'] );
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+	if ( 'edit' !== $view && catalyzer_profile_incomplete( $user ) && ! $done ) {
+		$view = 'edit';
+	}
+
+	echo '<div class="account-panel">';
+
+	if ( 'edit' === $view ) {
+		catalyzer_render_profile_form( $user, $done );
+	} else {
+		catalyzer_render_account_home( $user, $done );
+	}
+
+	echo '<p class="account-logout"><a class="linklike" href="' . esc_url( wp_logout_url( home_url( '/' ) ) ) . '">' . esc_html__( 'خروج از حساب', 'catalyzer' ) . '</a></p>';
+	echo '</div>';
+}
+
+/**
+ * نمای اصلی پنل: کتابخانه‌ی کاربر، میان‌برها و کد دسترسی.
+ *
+ * @param WP_User $user کاربر.
+ * @param bool    $done آیا همین الان تغییرات ذخیره شده است.
+ */
+function catalyzer_render_account_home( $user, $done = false ) {
+	$sections = function_exists( 'catalyzer_library_sections' ) ? catalyzer_library_sections() : array();
+	$mine     = catalyzer_account_library( $user->ID );
+	$total    = 0;
+	foreach ( $mine as $items ) {
+		$total += count( $items );
+	}
 	?>
-	<div class="account-panel">
-		<div class="account-head">
-			<p class="eyebrow"><?php esc_html_e( 'پنل کاربری', 'catalyzer' ); ?></p>
-			<h2><?php echo esc_html( sprintf( 'سلام %s', $user->display_name ) ); ?></h2>
-		</div>
+	<div class="account-head">
+		<p class="eyebrow"><?php esc_html_e( 'پنل کاربری', 'catalyzer' ); ?></p>
+		<h2><?php echo esc_html( sprintf( 'سلام %s', $user->display_name ) ); ?></h2>
+	</div>
 
-		<?php if ( $done ) : ?>
-			<p class="auth-note auth-note-ok"><?php esc_html_e( 'تغییرات ذخیره شد.', 'catalyzer' ); ?></p>
-		<?php endif; ?>
+	<?php if ( $done ) : ?>
+		<p class="auth-note auth-note-ok"><?php esc_html_e( 'تغییرات ذخیره شد.', 'catalyzer' ); ?></p>
+	<?php endif; ?>
 
-		<form class="account-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="catalyzer_profile">
-			<?php wp_nonce_field( 'catalyzer_profile' ); ?>
+	<p class="account-actions">
+		<a class="btn btn-ghost" href="<?php echo esc_url( add_query_arg( 'view', 'edit', catalyzer_account_url() ) ); ?>">
+			<?php echo catalyzer_icon( 'user' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<?php esc_html_e( 'ویرایش اطلاعات', 'catalyzer' ); ?>
+		</a>
+	</p>
 
-			<label for="accName"><?php esc_html_e( 'نام و نام خانوادگی', 'catalyzer' ); ?></label>
-			<input type="text" id="accName" name="cat_name" value="<?php echo esc_attr( $user->display_name ); ?>">
+	<div class="account-library">
+		<h3><?php esc_html_e( 'کتابخانه‌ی من', 'catalyzer' ); ?></h3>
 
-			<label for="accPhone"><?php esc_html_e( 'شماره‌ی موبایل', 'catalyzer' ); ?></label>
-			<input type="text" id="accPhone" value="<?php echo esc_attr( $phone ); ?>" dir="ltr" readonly>
-			<span class="field-note"><?php esc_html_e( 'شماره‌ی موبایل قابل تغییر نیست.', 'catalyzer' ); ?></span>
-
-			<label for="accField"><?php esc_html_e( 'رشته', 'catalyzer' ); ?></label>
-			<select id="accField" name="cat_field">
-				<?php foreach ( array( 'تجربی', 'ریاضی', 'سایر' ) as $opt ) : ?>
-					<option value="<?php echo esc_attr( $opt ); ?>" <?php selected( $field, $opt ); ?>><?php echo esc_html( $opt ); ?></option>
-				<?php endforeach; ?>
-			</select>
-
-			<label for="accEmail"><?php esc_html_e( 'ایمیل (اختیاری)', 'catalyzer' ); ?></label>
-			<input type="email" id="accEmail" name="cat_email" value="<?php echo esc_attr( false !== strpos( $user->user_email, '@sms.invalid' ) ? '' : $user->user_email ); ?>" dir="ltr">
-
-			<button type="submit" class="btn btn-primary"><?php esc_html_e( 'ذخیره‌ی تغییرات', 'catalyzer' ); ?></button>
-		</form>
-
-		<div class="account-courses">
-			<h3><?php esc_html_e( 'دوره‌های من', 'catalyzer' ); ?></h3>
-			<?php
-			$purchased = function_exists( 'catalyzer_user_course_ids' ) ? catalyzer_user_course_ids( $user->ID ) : array();
-			if ( empty( $purchased ) ) :
-				?>
-				<p class="form-note"><?php esc_html_e( 'هنوز دوره‌ای تهیه نکرده‌ای. پس از خرید، دوره‌ها اینجا نمایش داده می‌شوند.', 'catalyzer' ); ?></p>
-				<a class="btn btn-ghost" href="<?php echo esc_url( home_url( '/#courses' ) ); ?>"><?php esc_html_e( 'دیدن دوره‌ها', 'catalyzer' ); ?></a>
-			<?php else : ?>
-				<ul class="account-course-list">
-					<?php foreach ( $purchased as $course_id ) : ?>
-						<?php
-						$subtitle = get_post_meta( $course_id, '_cat_subtitle', true );
-						$thumb    = get_the_post_thumbnail( $course_id, 'medium', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' ) );
-						?>
-						<li class="account-course">
-							<?php if ( $thumb ) : ?>
-								<span class="account-course-thumb"><?php echo $thumb; // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-							<?php endif; ?>
-							<span class="account-course-body">
-								<span class="account-course-title"><?php echo esc_html( get_the_title( $course_id ) ); ?></span>
-								<?php if ( $subtitle ) : ?>
-									<span class="account-course-sub"><?php echo esc_html( $subtitle ); ?></span>
-								<?php endif; ?>
-							</span>
-							<a class="btn btn-ghost account-course-open" href="<?php echo esc_url( get_permalink( $course_id ) ); ?>">
-								<?php esc_html_e( 'ورود به دوره', 'catalyzer' ); ?>
-							</a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			<?php endif; ?>
-		</div>
-
-		<?php if ( function_exists( 'catalyzer_user_access_ids' ) ) : ?>
-			<div class="account-courses account-library">
-				<h3><?php esc_html_e( 'جزوه‌ها و ویدیوهای من', 'catalyzer' ); ?></h3>
+		<?php if ( ! $total ) : ?>
+			<p class="form-note">
+				<?php esc_html_e( 'هنوز چیزی تهیه نکرده‌ای. موارد رایگان بدون خرید هم در دسترس‌اند؛ برای موارد خریدنی کد دسترسی را پایین وارد کن.', 'catalyzer' ); ?>
+			</p>
+		<?php else : ?>
+			<?php foreach ( $sections as $cat_type => $cat_info ) : ?>
 				<?php
-				$opened = catalyzer_user_access_ids( $user->ID );
-				if ( empty( $opened ) ) :
-					?>
-					<p class="form-note"><?php esc_html_e( 'هنوز چیزی برایت باز نشده. جزوه‌های رایگان بدون ورود هم قابل دانلودند؛ برای موارد خریدنی کد دسترسی را پایین وارد کن.', 'catalyzer' ); ?></p>
-				<?php else : ?>
+				$items = isset( $mine[ $cat_type ] ) ? $mine[ $cat_type ] : array();
+				if ( ! $items ) {
+					continue;
+				}
+				?>
+				<div class="account-group">
+					<h4>
+						<?php echo catalyzer_icon( $cat_info['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+						<?php echo esc_html( $cat_info['label'] ); ?>
+						<span class="account-count"><?php echo esc_html( number_format_i18n( count( $items ) ) ); ?></span>
+					</h4>
 					<ul class="account-course-list">
-						<?php foreach ( $opened as $item_id ) : ?>
-							<?php
-							$is_note = 'note' === get_post_type( $item_id );
-							$files   = $is_note && function_exists( 'catalyzer_note_available_files' ) ? catalyzer_note_available_files( $item_id ) : array();
-							?>
+						<?php foreach ( $items as $item_id ) : ?>
+							<?php $files = function_exists( 'catalyzer_note_available_files' ) ? catalyzer_note_available_files( $item_id ) : array(); ?>
 							<li class="account-course">
+								<?php if ( has_post_thumbnail( $item_id ) ) : ?>
+									<span class="account-course-thumb"><?php echo get_the_post_thumbnail( $item_id, 'thumbnail', array( 'loading' => 'lazy', 'alt' => '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+								<?php else : ?>
+									<span class="account-course-thumb account-course-mark"><?php echo catalyzer_icon( $cat_info['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+								<?php endif; ?>
 								<span class="account-course-body">
 									<span class="account-course-title"><?php echo esc_html( get_the_title( $item_id ) ); ?></span>
-									<span class="account-course-sub"><?php echo esc_html( $is_note ? 'جزوه' : 'ویدیوی کلاس' ); ?></span>
+									<span class="account-course-sub"><?php echo esc_html( $cat_info['single'] ); ?></span>
 								</span>
 								<?php if ( $files ) : ?>
 									<span class="account-course-files">
@@ -626,20 +667,118 @@ function catalyzer_render_account_panel() {
 							</li>
 						<?php endforeach; ?>
 					</ul>
-				<?php endif; ?>
-
-				<div class="account-code">
-					<h4><?php esc_html_e( 'کد دسترسی داری؟', 'catalyzer' ); ?></h4>
-					<?php catalyzer_redeem_notice(); ?>
-					<?php catalyzer_redeem_form( catalyzer_account_url() ); ?>
 				</div>
-			</div>
+			<?php endforeach; ?>
 		<?php endif; ?>
-
-		<p class="account-logout">
-			<a class="linklike" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>"><?php esc_html_e( 'خروج از حساب', 'catalyzer' ); ?></a>
-		</p>
 	</div>
+
+	<div class="account-browse">
+		<h3><?php esc_html_e( 'گشتن در سایت', 'catalyzer' ); ?></h3>
+		<p class="form-note"><?php esc_html_e( 'موارد رایگان را همین حالا بردار؛ برای خریدنی‌ها کد بگیر.', 'catalyzer' ); ?></p>
+		<div class="account-shortcuts">
+			<?php foreach ( $sections as $cat_type => $cat_info ) : ?>
+				<?php
+				$url = post_type_exists( $cat_type ) ? get_post_type_archive_link( $cat_type ) : '';
+				if ( ! $url ) {
+					continue;
+				}
+				?>
+				<a class="account-shortcut" href="<?php echo esc_url( $url ); ?>">
+					<span class="account-shortcut-mark"><?php echo catalyzer_icon( $cat_info['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+					<span><?php echo esc_html( $cat_info['label'] ); ?></span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
+	<div class="account-code">
+		<h3><?php esc_html_e( 'کد دسترسی داری؟', 'catalyzer' ); ?></h3>
+		<?php
+		if ( function_exists( 'catalyzer_redeem_notice' ) ) {
+			catalyzer_redeem_notice();
+		}
+		if ( function_exists( 'catalyzer_redeem_form' ) ) {
+			catalyzer_redeem_form( catalyzer_account_url() );
+		}
+		?>
+	</div>
+	<?php
+}
+
+/**
+ * هر چیزی که برای این کاربر باز است، دسته‌بندی‌شده بر اساس نوع محتوا.
+ *
+ * @param int $user_id شناسه‌ی کاربر.
+ * @return array<string,int[]>
+ */
+function catalyzer_account_library( $user_id ) {
+	$out = array( 'note' => array(), 'exam' => array(), 'lesson' => array(), 'course' => array() );
+
+	if ( function_exists( 'catalyzer_user_access_ids' ) ) {
+		foreach ( catalyzer_user_access_ids( $user_id ) as $id ) {
+			$type = get_post_type( $id );
+			if ( isset( $out[ $type ] ) ) {
+				$out[ $type ][] = (int) $id;
+			}
+		}
+	}
+	if ( function_exists( 'catalyzer_user_course_ids' ) ) {
+		$out['course'] = array_map( 'intval', catalyzer_user_course_ids( $user_id ) );
+	}
+
+	return $out;
+}
+
+/**
+ * فرم ویرایش اطلاعات — حالا پشت یک کلیک، نه همیشه باز.
+ *
+ * @param WP_User $user کاربر.
+ * @param bool    $done آیا همین الان ذخیره شد.
+ */
+function catalyzer_render_profile_form( $user, $done = false ) {
+	$phone      = get_user_meta( $user->ID, '_cat_phone', true );
+	$field      = get_user_meta( $user->ID, '_cat_field', true );
+	$incomplete = catalyzer_profile_incomplete( $user );
+	?>
+	<div class="account-head">
+		<p class="eyebrow">
+			<a class="linklike" href="<?php echo esc_url( catalyzer_account_url() ); ?>">
+				<?php echo catalyzer_icon( 'arrow' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<?php esc_html_e( 'بازگشت به پنل', 'catalyzer' ); ?>
+			</a>
+		</p>
+		<h2><?php esc_html_e( 'ویرایش اطلاعات', 'catalyzer' ); ?></h2>
+	</div>
+
+	<?php if ( $done ) : ?>
+		<p class="auth-note auth-note-ok"><?php esc_html_e( 'تغییرات ذخیره شد.', 'catalyzer' ); ?></p>
+	<?php elseif ( $incomplete ) : ?>
+		<p class="auth-note auth-note-test"><?php esc_html_e( 'خوش آمدی. یک بار این اطلاعات را پر کن؛ دفعه‌های بعد مستقیم وارد پنلت می‌شوی.', 'catalyzer' ); ?></p>
+	<?php endif; ?>
+
+	<form class="account-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<input type="hidden" name="action" value="catalyzer_profile">
+		<?php wp_nonce_field( 'catalyzer_profile' ); ?>
+
+		<label for="accName"><?php esc_html_e( 'نام و نام خانوادگی', 'catalyzer' ); ?></label>
+		<input type="text" id="accName" name="cat_name" value="<?php echo esc_attr( $user->display_name ); ?>" required>
+
+		<label for="accPhone"><?php esc_html_e( 'شماره‌ی موبایل', 'catalyzer' ); ?></label>
+		<input type="text" id="accPhone" value="<?php echo esc_attr( $phone ); ?>" dir="ltr" readonly>
+		<span class="field-note"><?php esc_html_e( 'شماره‌ی موبایل قابل تغییر نیست.', 'catalyzer' ); ?></span>
+
+		<label for="accField"><?php esc_html_e( 'رشته', 'catalyzer' ); ?></label>
+		<select id="accField" name="cat_field">
+			<?php foreach ( array( 'تجربی', 'ریاضی', 'سایر' ) as $opt ) : ?>
+				<option value="<?php echo esc_attr( $opt ); ?>" <?php selected( $field, $opt ); ?>><?php echo esc_html( $opt ); ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<label for="accEmail"><?php esc_html_e( 'ایمیل (اختیاری)', 'catalyzer' ); ?></label>
+		<input type="email" id="accEmail" name="cat_email" value="<?php echo esc_attr( false !== strpos( $user->user_email, '@sms.invalid' ) ? '' : $user->user_email ); ?>" dir="ltr">
+
+		<button type="submit" class="btn btn-primary"><?php esc_html_e( 'ذخیره‌ی تغییرات', 'catalyzer' ); ?></button>
+	</form>
 	<?php
 }
 
