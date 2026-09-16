@@ -28,6 +28,9 @@ if ( catalyzer_section_enabled( 'courses' ) ) {
 if ( catalyzer_section_enabled( 'notes' ) ) {
 	get_template_part( 'template-parts/notes' );
 }
+if ( catalyzer_section_enabled( 'exams' ) ) {
+	get_template_part( 'template-parts/exams' );
+}
 if ( catalyzer_section_enabled( 'videos' ) ) {
 	get_template_part( 'template-parts/videos' );
 }
@@ -39,6 +42,9 @@ if ( catalyzer_section_enabled( 'testimonials' ) ) {
 }
 if ( catalyzer_section_enabled( 'cta' ) ) {
 	get_template_part( 'template-parts/cta' );
+}
+if ( catalyzer_section_enabled( 'contact' ) ) {
+	get_template_part( 'template-parts/contact' );
 }
 
 // اگر صفحه‌ی اصلی روی «آخرین نوشته‌ها» تنظیم شده باشد، محتوای صفحه‌ی برگزیده (در صورت وجود) نمایش داده نمی‌شود؛

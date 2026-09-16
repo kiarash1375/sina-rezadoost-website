@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.5.1' );
+define( 'CATALYZER_VERSION', '1.6.0' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -44,6 +44,8 @@ function catalyzer_setup() {
 	) );
 
 	add_image_size( 'catalyzer-card', 720, 450, true );
+	// جلد جزوه، آزمون و کتاب پرتره است؛ برش نمی‌خورد تا طرح روی جلد سالم بماند.
+	add_image_size( 'catalyzer-cover', 520, 760, false );
 
 	// اپارات را به‌عنوان ارائه‌دهنده‌ی oEmbed اضافه می‌کنیم تا آدرس ویدیوها خودکار جاسازی شود.
 	wp_oembed_add_provider( '#https?://(www\.)?aparat\.com/v/.*#i', 'https://www.aparat.com/oembed', true );
@@ -160,11 +162,19 @@ add_action( 'admin_init', 'catalyzer_maybe_upgrade', 5 );
  * بخش «تماس و مشاوره» در نسخه‌ی ۱.۳.۰ حذف شد. هر لینکی که هنوز به #contact
  * اشاره می‌کند به صفحه‌ی حساب کاربری منتقل می‌شود و آیتم «تماس» از منوها
  * برداشته می‌شود، وگرنه کاربر روی لنگرِ ناموجود می‌ماند.
+ *
+ * فقط یک بار اجرا می‌شود. در ۱.۶.۰ بخش «تماس با ما» با همان لنگر #contact
+ * برگشت؛ اگر این تابع در هر به‌روزرسانی دوباره اجرا شود، آیتم تازه‌ی منو را
+ * هم پاک می‌کند.
  */
 function catalyzer_retire_contact_links() {
 	if ( ! function_exists( 'catalyzer_account_url' ) ) {
 		return;
 	}
+	if ( get_option( 'catalyzer_contact_retired' ) ) {
+		return;
+	}
+	update_option( 'catalyzer_contact_retired', 1 );
 	$account = catalyzer_account_url();
 
 	// همه‌ی محتوای قالب در theme mod ذخیره می‌شود (catalyzer_opt → get_theme_mod).
