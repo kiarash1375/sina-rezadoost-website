@@ -95,11 +95,12 @@ function catalyzer_customize_register( $wp ) {
 		'method'       => 'متد کاتالیزور',
 		'courses'      => 'دوره‌ها',
 		'notes'        => 'جزوه‌ها',
+		'exams'        => 'آزمون‌ها',
 		'videos'       => 'ویدیوهای کلاس',
 		'success'      => 'ویدیوهای رتبه‌برترها',
 		'testimonials' => 'نظرات دانش‌آموزان',
 		'cta'          => 'بنر فراخوان',
-		'contact'      => 'تماس',
+		'contact'      => 'تماس با ما',
 	) as $key => $label ) {
 		catalyzer_cz_field( $wp, 'catalyzer_general', 'show_' . $key, 'نمایش بخش: ' . $label, array( 'type' => 'checkbox', 'default' => true ) );
 	}
@@ -190,6 +191,15 @@ function catalyzer_customize_register( $wp ) {
 		'description' => 'همین متن روی هر جزوه و ویدیوی خریدنی دیده می‌شود.',
 	) );
 
+	/* ---------- آزمون‌ها ---------- */
+	$add_section( 'catalyzer_exams', 'آزمون‌ها (سربرگ بخش)', 67 );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_eyebrow', 'برچسب کوچک', array( 'default' => catalyzer_exams_default( 'exams_eyebrow' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_heading', 'تیتر', array( 'default' => catalyzer_exams_default( 'exams_heading' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_intro', 'توضیح کوتاه', array( 'default' => catalyzer_exams_default( 'exams_intro' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_count', 'تعداد آزمون در صفحه‌ی اصلی', array( 'default' => catalyzer_exams_default( 'exams_count' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_more_text', 'دکمه‌ی «همه‌ی آزمون‌ها» — متن', array( 'default' => catalyzer_exams_default( 'exams_more_text' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_exams', 'exams_more_url', 'دکمه‌ی «همه‌ی آزمون‌ها» — لینک', array( 'default' => '' ) );
+
 	/* ---------- ویدیوها ---------- */
 	$add_section( 'catalyzer_videos', 'ویدیوهای کلاس (سربرگ بخش)', 70 );
 	catalyzer_cz_field( $wp, 'catalyzer_videos', 'videos_eyebrow', 'برچسب کوچک', array( 'default' => 'ویدیوهای کلاس' ) );
@@ -228,20 +238,28 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn2_text', 'دکمه‌ی دوم — متن', array( 'default' => 'دیدن دوره‌ها' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_cta', 'cta_btn2_url', 'دکمه‌ی دوم — لینک', array( 'default' => '#courses' ) );
 
-	/* ---------- تماس ---------- */
-	$add_section( 'catalyzer_contact', 'تماس', 100 );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_eyebrow', 'برچسب کوچک', array( 'default' => 'تماس و مشاوره' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_heading', 'تیتر', array( 'default' => 'سؤالی داری؟ راه‌های ارتباط با کاتالیزور' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_telegram_label', 'برچسب تلگرام', array( 'default' => 'تلگرام پشتیبانی' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_telegram_value', 'آیدی/متن تلگرام', array( 'default' => '@catalyzer_support' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_phone', 'شماره تماس (نمایشی)', array( 'default' => '۰۹۱۵ ۰۰۰ ۰۰۰۰' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_location', 'محل تدریس', array( 'default' => 'مشهد' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_email', 'ایمیل دریافت درخواست‌ها (خالی = ایمیل مدیر سایت)', array( 'type' => 'email', 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_telegram', 'لینک تلگرام', array( 'type' => 'url', 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_instagram', 'لینک اینستاگرام', array( 'type' => 'url', 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_youtube', 'لینک یوتیوب', array( 'type' => 'url', 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_aparat', 'لینک اپارات', array( 'type' => 'url', 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_cf7', 'شورت‌کد فرم (مثلاً Contact Form 7). اگر پر شود جایگزین فرم داخلی می‌شود.', array( 'default' => '' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_form_note', 'یادداشت زیر فرم', array( 'default' => 'در کوتاه‌ترین زمان با شما تماس می‌گیریم.' ) );
+	/* ---------- تماس با ما ---------- */
+	$add_section( 'catalyzer_contact', 'تماس با ما', 100 );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_eyebrow', 'برچسب کوچک', array( 'default' => catalyzer_contact_default( 'contact_eyebrow' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_heading', 'تیتر', array( 'default' => catalyzer_contact_default( 'contact_heading' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_intro', 'توضیح کوتاه', array( 'type' => 'textarea', 'default' => catalyzer_contact_default( 'contact_intro' ) ) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_telegram', 'کانال تلگرام (لینک کامل)', array(
+		'type'        => 'url',
+		'default'     => catalyzer_contact_default( 'social_telegram' ),
+		'description' => 'خالی بگذارید تا کارتش نمایش داده نشود.',
+	) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'support_telegram', 'آیدی تلگرام پشتیبانی', array(
+		'default'     => catalyzer_contact_default( 'support_telegram' ),
+		'description' => 'با @ یا بدون آن. همین آیدی روی جعبه‌ی «تهیه‌ی کد دسترسی» هم دیده می‌شود.',
+	) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_phone', 'شماره تماس برای مشاوره', array(
+		'default'     => catalyzer_contact_default( 'contact_phone' ),
+		'description' => 'تا وقتی خالی است، کارت تماس تلفنی ساخته نمی‌شود.',
+	) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'social_instagram', 'آیدی یا لینک اینستاگرام', array(
+		'default'     => catalyzer_contact_default( 'social_instagram' ),
+		'description' => 'تا وقتی خالی است، کارت اینستاگرام ساخته نمی‌شود.',
+	) );
+	catalyzer_cz_field( $wp, 'catalyzer_contact', 'contact_email', 'ایمیل دریافت پیام‌ها (خالی = ایمیل مدیر سایت)', array( 'type' => 'email', 'default' => '' ) );
 }
 add_action( 'customize_register', 'catalyzer_customize_register' );

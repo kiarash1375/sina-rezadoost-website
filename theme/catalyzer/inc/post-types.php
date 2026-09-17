@@ -136,7 +136,7 @@ add_action( 'init', 'catalyzer_register_post_types' );
  * بسته‌های جاوااسکریپت ویرایشگر بلوکی وابسته نیست.
  */
 function catalyzer_use_classic_editor( $use_block, $post_type ) {
-	if ( in_array( $post_type, array( 'course', 'lesson', 'success_video', 'testimonial', 'catalyzer_lead' ), true ) ) {
+	if ( in_array( $post_type, array( 'course', 'lesson', 'success_video', 'testimonial', 'catalyzer_lead', 'exam' ), true ) ) {
 		return false;
 	}
 	return $use_block;
@@ -185,9 +185,40 @@ function catalyzer_meta_fields() {
 			),
 		),
 
+		'exam' => array(
+			'title'  => 'مشخصات آزمون',
+			'note'   => 'برگه‌ی سؤال و پاسخنامه در جعبه‌ی «فایل‌های آزمون» بارگذاری می‌شوند و عکس آزمون از جعبه‌ی «عکس آزمون» کنار صفحه. سرفصل‌ها هر خط یک مورد.',
+			'fields' => array(
+				'_cat_access_type' => array(
+					'label'   => 'دسترسی',
+					'type'    => 'select',
+					'options' => array( 'free' => 'رایگان — همه دانلود می‌کنند', 'paid' => 'خریدنی — با کد دسترسی باز می‌شود' ),
+					'default' => 'free',
+				),
+				'_cat_price'      => array( 'label' => 'قیمت (فقط برای آزمون خریدنی)', 'type' => 'text' ),
+				'_cat_currency'   => array( 'label' => 'واحد پول', 'type' => 'text', 'default' => 'تومان' ),
+				'_cat_subtitle'   => array( 'label' => 'زیرعنوان کوتاه', 'type' => 'text' ),
+				'_cat_questions'  => array( 'label' => 'تعداد سؤال', 'type' => 'text' ),
+				'_cat_difficulty' => array(
+					'label'   => 'درجه‌ی سختی',
+					'type'    => 'select',
+					'options' => array(
+						'easy'   => 'آسان',
+						'medium' => 'متوسط',
+						'hard'   => 'دشوار',
+						'mixed'  => 'ترکیبی',
+					),
+					'default' => 'medium',
+				),
+				'_cat_time'       => array( 'label' => 'زمان پیشنهادی (مثلاً ۴۵ دقیقه)', 'type' => 'text' ),
+				'_cat_features'   => array( 'label' => 'سرفصل‌ها (هر خط یک مورد)', 'type' => 'textarea' ),
+				'_cat_part_of_course' => array( 'label' => 'شناسه‌ی دوره‌ای که این آزمون جزئش است (اختیاری)', 'type' => 'text' ),
+			),
+		),
+
 		'note' => array(
 			'title'  => 'مشخصات جزوه',
-			'note'   => 'هر جزوه دو فایل دارد — برگه‌ی خالی و همان برگه با پاسخ‌ها — که در جعبه‌ی «فایل‌های جزوه» بارگذاری می‌شوند. اینجا فقط مشخصاتش را می‌نویسی.',
+			'note'   => 'هر جزوه دو فایل دارد — برگه‌ی خالی و همان برگه با پاسخ‌ها — که در جعبه‌ی «فایل‌های جزوه» بارگذاری می‌شوند، و یک عکس که از جعبه‌ی «عکس جزوه» کنار صفحه انتخاب می‌شود.',
 			'fields' => array(
 				'_cat_access_type' => array(
 					'label'   => 'دسترسی',

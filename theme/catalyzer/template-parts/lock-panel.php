@@ -18,8 +18,9 @@ $cat_id       = get_the_ID();
 $cat_price    = catalyzer_price( $cat_id );
 $cat_currency = catalyzer_currency( $cat_id );
 $cat_buy_note = catalyzer_notes_opt( 'buy_note' );
-$cat_telegram = catalyzer_opt( 'social_telegram' );
-$cat_phone    = catalyzer_opt( 'contact_phone' );
+$cat_support  = catalyzer_contact_opt( 'support_telegram' );
+$cat_telegram = catalyzer_telegram_url( $cat_support ? $cat_support : catalyzer_contact_opt( 'social_telegram' ) );
+$cat_phone    = catalyzer_contact_opt( 'contact_phone' );
 ?>
 <div class="lock-panel">
 	<span class="lock-mark"><?php echo catalyzer_icon( 'lock' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>

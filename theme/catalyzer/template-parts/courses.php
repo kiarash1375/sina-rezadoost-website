@@ -55,6 +55,12 @@ if ( ! $q->have_posts() && ! current_user_can( 'edit_posts' ) ) {
 							<span class="badge"><?php echo esc_html( $badge ); ?></span>
 						<?php endif; ?>
 
+						<?php if ( has_post_thumbnail() ) : ?>
+							<a class="course-cover" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+								<?php the_post_thumbnail( 'catalyzer-card', array( 'loading' => 'lazy', 'decoding' => 'async', 'alt' => '' ) ); ?>
+							</a>
+						<?php endif; ?>
+
 						<h3><?php the_title(); ?></h3>
 
 						<?php if ( $subtitle ) : ?>

@@ -187,6 +187,11 @@ function catalyzer_icon( $name ) {
 		'unlock'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/></svg>',
 		'download'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7.5 11 12 15.5 16.5 11M5 19h14"/></svg>',
 		'pdf'       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+		'clipboard' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 10h6M9 14h6M9 18h3"/></svg>',
+		'clock'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+		'gauge'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/></svg>',
+		'user'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+		'arrow'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 6l-6 6 6 6"/></svg>',
 		'rings'     => '<svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>',
 	);
 	return isset( $icons[ $name ] ) ? $icons[ $name ] : '';
@@ -219,7 +224,9 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#notes'   => 'جزوه‌ها',
+		'#exams'   => 'آزمون‌ها',
 		'#videos'  => 'ویدیوها',
+		'#contact' => 'تماس با ما',
 	);
 	/**
 	 * فیلتر لینک‌های پیش‌فرض ناوبری.
@@ -268,7 +275,9 @@ function catalyzer_footer_menu() {
 		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#notes'   => 'جزوه‌ها',
+		'#exams'   => 'آزمون‌ها',
 		'#videos'  => 'ویدیوها',
+		'#contact' => 'تماس با ما',
 	) );
 	echo '<nav>';
 	foreach ( $links as $hash => $label ) {
@@ -308,4 +317,226 @@ function catalyzer_pagination() {
 	if ( $links ) {
 		echo '<nav class="pagination" aria-label="' . esc_attr__( 'صفحه‌بندی', 'catalyzer' ) . '">' . $links . '</nav>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
+}
+
+/* -------------------------------------------------------------------------
+ * کتابخانه: کمک‌های مشترک جزوه و آزمون
+ * ---------------------------------------------------------------------- */
+
+/**
+ * نام ترم‌های یک نوشته، از هر تاکسونومی که داشته باشد.
+ *
+ * @param int|WP_Post $post نوشته.
+ * @return string[]
+ */
+function catalyzer_term_names( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return array();
+	}
+	$out = array();
+	foreach ( get_object_taxonomies( $post->post_type ) as $tax ) {
+		foreach ( (array) get_the_terms( $post->ID, $tax ) as $term ) {
+			if ( $term instanceof WP_Term ) {
+				$out[] = $term->name;
+			}
+		}
+	}
+	return $out;
+}
+
+/**
+ * برچسب سختی آزمون، به فارسی.
+ */
+function catalyzer_difficulty_label( $key ) {
+	$map = array(
+		'easy'   => 'آسان',
+		'medium' => 'متوسط',
+		'hard'   => 'دشوار',
+		'mixed'  => 'ترکیبی',
+	);
+	return isset( $map[ $key ] ) ? $map[ $key ] : '';
+}
+
+/**
+ * مشخصه‌های کوتاهی که روی کارت و زیر تیتر دیده می‌شوند.
+ *
+ * جزوه: تعداد صفحه. آزمون: تعداد سؤال، سختی، زمان پیشنهادی.
+ *
+ * @param int|WP_Post $post نوشته.
+ * @return string[]
+ */
+function catalyzer_library_facts( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return array();
+	}
+	$out = array();
+
+	if ( 'exam' === $post->post_type ) {
+		$q = get_post_meta( $post->ID, '_cat_questions', true );
+		if ( $q ) {
+			$out[] = catalyzer_fa_digits( $q ) . ' سؤال';
+		}
+		$d = catalyzer_difficulty_label( (string) get_post_meta( $post->ID, '_cat_difficulty', true ) );
+		if ( $d ) {
+			$out[] = 'سختی: ' . $d;
+		}
+		$t = get_post_meta( $post->ID, '_cat_time', true );
+		if ( $t ) {
+			$out[] = catalyzer_fa_digits( $t );
+		}
+		return $out;
+	}
+
+	$pages = get_post_meta( $post->ID, '_cat_pages', true );
+	if ( $pages ) {
+		$out[] = catalyzer_fa_digits( $pages ) . ' صفحه';
+	}
+	return $out;
+}
+
+/**
+ * آیکون کارت بر اساس نوع و قفل.
+ */
+function catalyzer_library_icon( $post_type, $locked = false ) {
+	if ( $locked ) {
+		return 'lock';
+	}
+	return 'exam' === $post_type ? 'clipboard' : 'pdf';
+}
+
+/**
+ * متن دکمه‌ی کارت وقتی فایلی برای دانلود نشان داده نمی‌شود.
+ */
+function catalyzer_library_cta( $post_type, $locked = false ) {
+	if ( 'exam' === $post_type ) {
+		return $locked ? 'تهیه‌ی این آزمون' : 'مشاهده‌ی آزمون';
+	}
+	return $locked ? 'تهیه‌ی این جزوه' : 'مشاهده‌ی جزوه';
+}
+
+/**
+ * پیش‌فرض‌های بخش آزمون‌ها — به همان دلیلِ بخش جزوه‌ها، در یک جا.
+ */
+function catalyzer_exams_default( $key ) {
+	$defaults = array(
+		'exams_eyebrow'   => 'آزمون‌ها',
+		'exams_heading'   => 'آزمون‌های مبحثی و جامع',
+		'exams_intro'     => 'هر آزمون با سرفصل، تعداد سؤال، درجه‌ی سختی و زمان پیشنهادی مشخص شده است.',
+		'exams_count'     => '6',
+		'exams_more_text' => 'همه‌ی آزمون‌ها',
+	);
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
+}
+
+/**
+ * خواندن یک کلید از بخش آزمون‌ها با پیش‌فرضِ درست.
+ */
+function catalyzer_exams_opt( $key ) {
+	return catalyzer_opt( $key, catalyzer_exams_default( $key ) );
+}
+
+/* -------------------------------------------------------------------------
+ * تماس با ما
+ * ---------------------------------------------------------------------- */
+
+/**
+ * پیش‌فرض‌های بخش تماس.
+ *
+ * شماره‌ی تماس و آیدی اینستاگرام عمداً خالی‌اند؛ تا وقتی در «سفارشی‌سازی» پر
+ * نشوند، کارتشان اصلاً ساخته نمی‌شود.
+ */
+function catalyzer_contact_default( $key ) {
+	$defaults = array(
+		'contact_eyebrow'   => 'تماس با ما',
+		'contact_heading'   => 'راه‌های ارتباطی',
+		'contact_intro'     => 'برای تهیه‌ی جزوه‌ها و آزمون‌ها، یا هر سؤالی درباره‌ی دوره‌ها، از همین راه‌ها پیام بده.',
+		'social_telegram'   => 'https://t.me/Dr_SinaRezadoost',
+		'support_telegram'  => '@catalysor_support',
+		'contact_phone'     => '',
+		'social_instagram'  => '',
+	);
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
+}
+
+/**
+ * خواندن یک کلید از بخش تماس با پیش‌فرضِ درست.
+ */
+function catalyzer_contact_opt( $key ) {
+	return catalyzer_opt( $key, catalyzer_contact_default( $key ) );
+}
+
+/**
+ * آدرس کامل یک آیدی تلگرام، چه با @ نوشته شده باشد چه بدون آن چه کامل.
+ */
+function catalyzer_telegram_url( $raw ) {
+	$raw = trim( (string) $raw );
+	if ( '' === $raw ) {
+		return '';
+	}
+	if ( 0 === strpos( $raw, 'http' ) ) {
+		return esc_url_raw( $raw );
+	}
+	return 'https://t.me/' . ltrim( $raw, '@' );
+}
+
+/**
+ * راه‌های ارتباطی که واقعاً پر شده‌اند.
+ *
+ * @return array<int,array{icon:string,label:string,value:string,url:string,external:bool,dir:string}>
+ */
+function catalyzer_contact_links() {
+	$out = array();
+
+	$channel = catalyzer_contact_opt( 'social_telegram' );
+	if ( $channel ) {
+		$out[] = array(
+			'icon'     => 'telegram',
+			'label'    => 'کانال تلگرام',
+			'value'    => '@' . ltrim( wp_parse_url( catalyzer_telegram_url( $channel ), PHP_URL_PATH ) ?: '', '/' ),
+			'url'      => catalyzer_telegram_url( $channel ),
+			'external' => true,
+			'dir'      => 'ltr',
+		);
+	}
+
+	$support = catalyzer_contact_opt( 'support_telegram' );
+	if ( $support ) {
+		$out[] = array(
+			'icon'     => 'telegram',
+			'label'    => 'پشتیبانی در تلگرام',
+			'value'    => '@' . ltrim( trim( $support ), '@' ),
+			'url'      => catalyzer_telegram_url( $support ),
+			'external' => true,
+			'dir'      => 'ltr',
+		);
+	}
+
+	$phone = catalyzer_contact_opt( 'contact_phone' );
+	if ( $phone ) {
+		$out[] = array(
+			'icon'     => 'phone',
+			'label'    => 'تماس برای مشاوره',
+			'value'    => $phone,
+			'url'      => 'tel:' . catalyzer_latin_digits( $phone ),
+			'external' => false,
+			'dir'      => 'ltr',
+		);
+	}
+
+	$instagram = catalyzer_contact_opt( 'social_instagram' );
+	if ( $instagram ) {
+		$handle = ltrim( trim( $instagram ), '@' );
+		$out[]  = array(
+			'icon'     => 'instagram',
+			'label'    => 'اینستاگرام',
+			'value'    => '@' . $handle,
+			'url'      => 0 === strpos( $handle, 'http' ) ? esc_url_raw( $handle ) : 'https://instagram.com/' . $handle,
+			'external' => true,
+			'dir'      => 'ltr',
+		);
+	}
+
+	return $out;
 }
