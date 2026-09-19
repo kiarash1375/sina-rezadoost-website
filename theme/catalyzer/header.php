@@ -52,6 +52,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 						?>
 					</a>
 				<?php endif; ?>
+				<button class="icon-btn theme-toggle" id="themeToggle" type="button"
+					aria-label="<?php esc_attr_e( 'تغییر تم روشن و تیره', 'catalyzer' ); ?>" aria-pressed="false">
+					<?php
+					echo catalyzer_icon( 'sun' );  // phpcs:ignore WordPress.Security.EscapeOutput
+					echo catalyzer_icon( 'moon' ); // phpcs:ignore WordPress.Security.EscapeOutput
+					?>
+				</button>
 				<button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="<?php esc_attr_e( 'منو', 'catalyzer' ); ?>" aria-expanded="false" aria-controls="navPanel">
 					<?php echo catalyzer_icon( 'menu' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				</button>
