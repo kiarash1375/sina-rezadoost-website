@@ -293,7 +293,6 @@ function catalyzer_ensure_demo_menu() {
 	if ( ! wp_get_nav_menu_items( $menu_id ) ) {
 		$items = array(
 			array( 'درباره‌ی مدرس', home_url( '/#about' ) ),
-			array( 'متد کاتالیزور', home_url( '/#method' ) ),
 			array( 'دوره‌ها', home_url( '/#courses' ) ),
 			array( 'ویدیوهای کلاس', home_url( '/#videos' ) ),
 			array( 'رتبه‌برترها', home_url( '/#success' ) ),

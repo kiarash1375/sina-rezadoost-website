@@ -92,7 +92,6 @@ function catalyzer_customize_register( $wp ) {
 	foreach ( array(
 		'stats'        => 'نوار آمار',
 		'about'        => 'درباره و رزومه',
-		'method'       => 'متد کاتالیزور',
 		'courses'      => 'دوره‌ها',
 		'notes'        => 'جزوه‌ها',
 		'exams'        => 'آزمون‌ها',
@@ -154,21 +153,6 @@ function catalyzer_customize_register( $wp ) {
 		'type'    => 'textarea',
 		'default' => catalyzer_default_credentials(),
 	) );
-
-	/* ---------- متد ---------- */
-	$add_section( 'catalyzer_method', 'متد کاتالیزور', 50 );
-	catalyzer_cz_field( $wp, 'catalyzer_method', 'method_eyebrow', 'برچسب کوچک', array( 'default' => 'چرا کاتالیزور؟' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_method', 'method_heading', 'تیتر', array( 'default' => 'کاتالیزور سرعت واکنش را بالا می‌برد — اینجا هم همین کار را می‌کنیم' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_method', 'method_intro', 'توضیح کوتاه', array( 'default' => 'سه ستونی که مسیر شیمیِ کنکور را کوتاه‌تر و مطمئن‌تر می‌کند.' ) );
-	$pillar_defaults = array(
-		array( 'مفهوم‌محور، نه حفظِ خشک', 'هر مبحث از ریشه‌ی مفهومی باز می‌شود تا سؤال‌های ترکیبی و نفس‌گیرِ کنکور برایت قابل حل باشد.' ),
-		array( 'تست و تکنیکِ زمان', 'تکنیک‌های حل سریع، تله‌های رایج و مدیریت زمان روی سؤالات واقعیِ کنکور و آزمون‌های کشوری.' ),
-		array( 'پشتیبانی و آزمونِ منظم', 'آزمون‌های مبحثی، بازخورد و پیگیری مستمر تا مطمئن شوی مطالب واقعاً تثبیت شده است.' ),
-	);
-	for ( $i = 1; $i <= 3; $i++ ) {
-		catalyzer_cz_field( $wp, 'catalyzer_method', "pillar{$i}_title", "ستون {$i} — تیتر", array( 'default' => $pillar_defaults[ $i - 1 ][0] ) );
-		catalyzer_cz_field( $wp, 'catalyzer_method', "pillar{$i}_text", "ستون {$i} — متن", array( 'type' => 'textarea', 'default' => $pillar_defaults[ $i - 1 ][1] ) );
-	}
 
 	/* ---------- دوره‌ها ---------- */
 	$add_section( 'catalyzer_courses', 'دوره‌ها (سربرگ بخش)', 60 );
