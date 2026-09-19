@@ -186,6 +186,8 @@
   function stop() { running = false; cancelAnimationFrame(raf); }
 
   readColor();
+  // تعویض تم می‌تواند رنگ لهجه را عوض کند؛ دوباره بخوان.
+  window.addEventListener("catalyzer:themechange", readColor);
   resize();
 
   if (rmq.matches) {

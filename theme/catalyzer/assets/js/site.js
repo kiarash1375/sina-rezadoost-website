@@ -303,3 +303,35 @@
     b.addEventListener("click", function () { apply(b.getAttribute("data-filter")); });
   });
 })();
+
+/* ------------------------------------------------------------------
+   تغییر تم روشن / تیره.
+   تم تیره پیش‌فرض است. انتخاب کاربر در localStorage می‌ماند و در <head>
+   پیش از رنگ‌آمیزی اعمال می‌شود؛ اینجا فقط دکمه را می‌بندیم.
+   ------------------------------------------------------------------ */
+(function () {
+  var btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  var root = document.documentElement;
+
+  function sync() {
+    var light = root.getAttribute("data-theme") === "light";
+    btn.setAttribute("aria-pressed", light ? "true" : "false");
+  }
+
+  btn.addEventListener("click", function () {
+    var light = root.getAttribute("data-theme") === "light";
+    var next = light ? "dark" : "light";
+    if (next === "light") {
+      root.setAttribute("data-theme", "light");
+    } else {
+      root.removeAttribute("data-theme");
+    }
+    try { localStorage.setItem("catalyzer-theme", next); } catch (e) {}
+    sync();
+    // پس‌زمینه‌ی ذرات رنگ لهجه را از CSS می‌خواند؛ بعد از تعویض تم باید دوباره بخواند.
+    window.dispatchEvent(new Event("catalyzer:themechange"));
+  });
+
+  sync();
+})();
