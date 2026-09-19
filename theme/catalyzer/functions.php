@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CATALYZER_VERSION', '1.6.0' );
+define( 'CATALYZER_VERSION', '1.7.0' );
 define( 'CATALYZER_DIR', get_template_directory() );
 define( 'CATALYZER_URI', get_template_directory_uri() );
 
@@ -104,6 +104,17 @@ function catalyzer_assets() {
 add_action( 'wp_enqueue_scripts', 'catalyzer_assets' );
 
 /**
+ * تم انتخابی کاربر باید پیش از اولین رنگ‌آمیزی اعمال شود، وگرنه صفحه یک لحظه
+ * تیره می‌آید و بعد روشن می‌شود. این تکه عمداً درون‌خطی و در <head> است.
+ */
+function catalyzer_theme_boot() {
+	?>
+<script>(function(){try{var t=localStorage.getItem('catalyzer-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+	<?php
+}
+add_action( 'wp_head', 'catalyzer_theme_boot', 1 );
+
+/**
  * فونت‌ها را در ویرایشگر بلوک هم بارگذاری کن.
  */
 function catalyzer_editor_assets() {
@@ -151,6 +162,7 @@ function catalyzer_maybe_upgrade() {
 		catalyzer_ensure_account_page();
 	}
 	catalyzer_retire_contact_links();
+	catalyzer_retire_method_section();
 	if ( function_exists( 'catalyzer_prepare_library_dir' ) ) {
 		catalyzer_prepare_library_dir();
 	}
@@ -194,6 +206,41 @@ function catalyzer_retire_contact_links() {
 		}
 		foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $item ) {
 			if ( isset( $item->url ) && false !== strpos( $item->url, '#contact' ) ) {
+				wp_delete_post( $item->ID, true );
+			}
+		}
+	}
+}
+
+/**
+ * بخش «متد کاتالیزور» در ۱.۷.۰ حذف شد. آیتم‌های منو که به لنگر ناموجود #method
+ * اشاره می‌کنند برداشته می‌شوند و theme mod‌های همان بخش پاک می‌شوند، وگرنه
+ * کاربر روی لنگری کلیک می‌کند که دیگر وجود ندارد.
+ *
+ * فقط یک بار اجرا می‌شود.
+ */
+function catalyzer_retire_method_section() {
+	if ( get_option( 'catalyzer_method_retired' ) ) {
+		return;
+	}
+	update_option( 'catalyzer_method_retired', 1 );
+
+	foreach ( array( 'method_eyebrow', 'method_heading', 'method_intro' ) as $key ) {
+		remove_theme_mod( 'catalyzer_' . $key );
+	}
+	for ( $i = 1; $i <= 3; $i++ ) {
+		remove_theme_mod( 'catalyzer_pillar' . $i . '_title' );
+		remove_theme_mod( 'catalyzer_pillar' . $i . '_text' );
+	}
+	remove_theme_mod( 'catalyzer_section_method' );
+
+	foreach ( array( 'primary', 'footer' ) as $location ) {
+		$menu = wp_get_nav_menu_object( get_nav_menu_locations()[ $location ] ?? 0 );
+		if ( ! $menu ) {
+			continue;
+		}
+		foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $item ) {
+			if ( isset( $item->url ) && false !== strpos( $item->url, '#method' ) ) {
 				wp_delete_post( $item->ID, true );
 			}
 		}

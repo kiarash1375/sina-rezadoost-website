@@ -192,9 +192,17 @@ function catalyzer_icon( $name ) {
 		'gauge'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-5"/></svg>',
 		'user'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
 		'arrow'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 6l-6 6 6 6"/></svg>',
+		'sun'       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>',
+		'moon'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2z"/></svg>',
 		'rings'     => '<svg class="rings" viewBox="0 0 120 75" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.35" aria-hidden="true"><path d="M60 20 74 28 74 47 60 55 46 47 46 28Z"/><circle cx="60" cy="37" r="3"/></svg>',
 	);
-	return isset( $icons[ $name ] ) ? $icons[ $name ] : '';
+	if ( ! isset( $icons[ $name ] ) ) {
+		return '';
+	}
+
+	// هر آیکن یک کلاس می‌گیرد تا استایل بتواند تک‌تکشان را هدف بگیرد — مثلاً
+	// اصلاح نوری مثلث «پخش» که نباید روی آیکن قفل اعمال شود.
+	return str_replace( '<svg ', '<svg class="i-' . esc_attr( $name ) . '" ', $icons[ $name ] );
 }
 
 /**
@@ -221,7 +229,6 @@ function catalyzer_nav_menu( $list_class = 'nav-links', $panel = false ) {
 
 	$default = array(
 		'#about'   => 'درباره',
-		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#notes'   => 'جزوه‌ها',
 		'#exams'   => 'آزمون‌ها',
@@ -272,7 +279,6 @@ function catalyzer_footer_menu() {
 	}
 	$links = apply_filters( 'catalyzer_default_nav', array(
 		'#about'   => 'درباره',
-		'#method'  => 'متد کاتالیزور',
 		'#courses' => 'دوره‌ها',
 		'#notes'   => 'جزوه‌ها',
 		'#exams'   => 'آزمون‌ها',

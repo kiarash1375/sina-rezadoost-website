@@ -19,9 +19,6 @@ if ( catalyzer_section_enabled( 'stats' ) ) {
 if ( catalyzer_section_enabled( 'about' ) ) {
 	get_template_part( 'template-parts/about' );
 }
-if ( catalyzer_section_enabled( 'method' ) ) {
-	get_template_part( 'template-parts/method' );
-}
 if ( catalyzer_section_enabled( 'courses' ) ) {
 	get_template_part( 'template-parts/courses' );
 }

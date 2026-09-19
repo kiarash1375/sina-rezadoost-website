@@ -45,6 +45,12 @@ function catalyzer_register_post_types() {
 			'edit_item'     => 'ویرایش ویدیو',
 			'view_item'     => 'مشاهده‌ی ویدیو',
 			'menu_name'     => 'ویدیوهای کلاس',
+			// جعبه‌ی «تصویر شاخص» برای ویدیو یعنی پوستر؛ با همین نام پیدا کردنش
+			// در پنل آسان‌تر است.
+			'featured_image'        => 'پوستر ویدیو',
+			'set_featured_image'    => 'انتخاب پوستر ویدیو',
+			'remove_featured_image' => 'حذف پوستر',
+			'use_featured_image'    => 'استفاده به‌عنوان پوستر ویدیو',
 		),
 		'public'        => true,
 		'has_archive'   => true,
