@@ -26,6 +26,33 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  /* --- hero photo fades away as the page scrolls --- */
+  var fadeHero = document.querySelector("[data-hero-fade]");
+  if (fadeHero) {
+    var media = fadeHero.querySelector(".hero-media");
+    var copy = fadeHero.querySelector(".wrap");
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ticking = false;
+    var paint = function () {
+      ticking = false;
+      var h = fadeHero.offsetHeight || 1;
+      var p = Math.min(Math.max(window.scrollY / (h * 0.8), 0), 1);
+      if (media) {
+        media.style.opacity = (1 - p).toFixed(3);
+        media.style.transform = still ? "" : "translateY(" + (p * 18).toFixed(1) + "%) scale(" + (1 + p * 0.06).toFixed(3) + ")";
+      }
+      if (copy) {
+        copy.style.opacity = Math.max(1 - p * 1.4, 0).toFixed(3);
+        copy.style.transform = still ? "" : "translateY(" + (-p * 36).toFixed(1) + "px)";
+      }
+    };
+    paint();
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(paint); }
+    }, { passive: true });
+    window.addEventListener("resize", paint);
+  }
+
   /* --- reveal on scroll --- */
   var items = document.querySelectorAll(".reveal, .stagger");
   if (items.length) {
@@ -219,7 +246,7 @@
  * away on close, so no player loads until someone asks for one.
  * ------------------------------------------------------------------------ */
 (function () {
-  var cards = Array.prototype.slice.call(document.querySelectorAll("[data-embed]"));
+  var cards = Array.prototype.slice.call(document.querySelectorAll("[data-embed],[data-arvan]"));
   if (!cards.length) return;
 
   var modal = document.createElement("div");
@@ -238,7 +265,16 @@
 
   function open(card) {
     lastFocus = card;
-    slot.innerHTML = decodeURIComponent(card.getAttribute("data-embed"));
+    var arvan = card.getAttribute("data-arvan");
+    if (arvan) {
+      // ویدیوی آروان: آدرسش داخل صفحه نیست، پلیر خودش از سرور می‌گیردش.
+      slot.innerHTML = '<div class="player-box"></div>';
+      if (window.catalyzerPlayer) {
+        window.catalyzerPlayer.mount(slot.querySelector(".player-box"), arvan);
+      }
+    } else {
+      slot.innerHTML = decodeURIComponent(card.getAttribute("data-embed"));
+    }
     modal.removeAttribute("hidden");
     document.body.classList.add("sv-modal-open");
     var btn = modal.querySelector(".sv-modal-close");
@@ -246,6 +282,8 @@
   }
 
   function close() {
+    var box = slot.querySelector(".player-box");
+    if (box && window.catalyzerPlayer) window.catalyzerPlayer.teardown(box);
     slot.innerHTML = "";
     modal.setAttribute("hidden", "");
     document.body.classList.remove("sv-modal-open");

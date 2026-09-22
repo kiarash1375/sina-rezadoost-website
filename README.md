@@ -49,14 +49,25 @@ and makes every part editable in WordPress:
 - `front-page.php` composes the landing sections from `template-parts/`.
 - All copy and images come from the Customizer panel
   *«کاتالیزور — محتوای صفحه‌ی فرود»*, with per-section on/off toggles.
-- Custom post types: **course**, **lesson** (YouTube/Aparat oEmbed),
+- Custom post types: **course**, **lesson** (YouTube/Aparat oEmbed, or ArvanCloud VOD),
   **testimonial**, plus a private **catalyzer_lead** for contact-form submissions.
 - Native contact form (nonce + honeypot, saves the lead and emails it) or a
   Contact Form 7 shortcode.
 - **WooCommerce**: each course links to a product / checkout page; the shop
   inherits the theme styling.
 - `single` / `archive` / `search` / `404` / `page` templates plus dedicated
-  course and lesson templates; RTL-first; dark theme; graphene-lattice background.
+  course and lesson templates; RTL-first; light theme by default with a dark/light
+  toggle (choice kept in `localStorage`); graphene-lattice background.
+- **Photo hero**: full-bleed background photo, separate landscape (desktop) and
+  portrait (phone) images, fading out as the page scrolls. Both are replaceable
+  in the Customizer; the bundled defaults live in `assets/img/hero-*.{webp,jpg}`.
+- **Secure video (ArvanCloud VOD)**: a lesson's ArvanCloud HLS URL (or video
+  UUID) is never printed in the page. When a viewer who has access presses play,
+  the server asks the ArvanCloud VOD API (`GET /videos/{id}?secure_ip=…&secure_expire_time=…`)
+  for a secure link bound to that viewer's IP, and the player renews it
+  transparently before it expires. Needs an ArvanCloud machine-user API key with
+  VOD access, entered in *Lessons → پخش امن (آروان)*; the key is stored only in
+  the site's database.
 
 The theme's CSS/JS track `index.html` — same dark palette, wide-display layout and
 carbon-lattice background. WordPress is the intended production target.

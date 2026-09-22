@@ -27,6 +27,12 @@ if ( $cat_locked ) {
 	$cat_embed = '';
 }
 
+// ویدیوی آروانِ باز، داخل همان لایت‌باکس با پلیر خودمان پخش می‌شود.
+$cat_arvan = ! $cat_locked && function_exists( 'catalyzer_is_arvan_video' ) && catalyzer_is_arvan_video( $cat_id );
+if ( $cat_arvan ) {
+	$cat_embed = '';
+}
+
 $cat_slugs = array();
 foreach ( (array) get_the_terms( $cat_id, 'lesson_cat' ) as $cat_term ) {
 	if ( $cat_term instanceof WP_Term ) {
@@ -34,7 +40,12 @@ foreach ( (array) get_the_terms( $cat_id, 'lesson_cat' ) as $cat_term ) {
 	}
 }
 ?>
-<?php if ( $cat_embed ) : ?>
+<?php if ( $cat_arvan ) : ?>
+	<article class="video" tabindex="0" role="button"
+		data-cats="<?php echo esc_attr( implode( ' ', $cat_slugs ) ); ?>"
+		data-arvan="<?php echo esc_attr( $cat_id ); ?>"
+		aria-label="<?php echo esc_attr( sprintf( 'پخش ویدیوی %s', get_the_title() ) ); ?>">
+<?php elseif ( $cat_embed ) : ?>
 	<article class="video" tabindex="0" role="button"
 		data-cats="<?php echo esc_attr( implode( ' ', $cat_slugs ) ); ?>"
 		data-embed="<?php echo esc_attr( rawurlencode( $cat_embed ) ); ?>"
@@ -60,7 +71,7 @@ foreach ( (array) get_the_terms( $cat_id, 'lesson_cat' ) as $cat_term ) {
 			<?php endif; ?>
 			<h3><?php the_title(); ?></h3>
 		</div>
-<?php if ( $cat_embed ) : ?>
+<?php if ( $cat_arvan || $cat_embed ) : ?>
 	</article>
 <?php else : ?>
 	</a>

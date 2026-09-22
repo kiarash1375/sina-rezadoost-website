@@ -204,18 +204,62 @@ p{margin:0}
 }
 .hero-trust .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow)}
 
-.portrait{position:relative;width:min(420px,86vw);margin-inline:auto}
-.portrait svg{width:100%;height:auto;filter:drop-shadow(0 30px 50px rgba(0,0,0,.4))}
-.hexframe-fill{fill:var(--bg-3)}
-.hexframe-ring{fill:none;stroke:var(--accent);stroke-width:2.5}
-.portrait .tile{
-  position:absolute;inset-block-end:6%;inset-inline-start:-6%;
-  width:104px;background:var(--bg-2);border:1px solid var(--accent);
-  border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);
+.hero--photo{
+  display:flex;align-items:center;
+  min-height:calc(100svh - 70px);
+  padding-block:clamp(40px,6vw,80px);
+  isolation:isolate;
 }
-.portrait .tile .num{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);display:flex;justify-content:space-between}
-.portrait .tile .sym{font-family:var(--font-display);font-weight:800;font-size:2rem;line-height:1.1;color:var(--text)}
-.portrait .tile .nm{font-size:12px;color:var(--text-dim)}
+.hero--photo > .wrap{width:100%}
+.hero-media{position:absolute;inset:0;z-index:-2;overflow:hidden;transform-origin:50% 40%;will-change:opacity,transform}
+.hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;display:block}
+.hero-scrim{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(to top,var(--bg) 0,color-mix(in srgb,var(--bg) 0%,transparent) 22%),
+    linear-gradient(to left,
+      color-mix(in srgb,var(--bg) 92%,transparent) 0,
+      color-mix(in srgb,var(--bg) 78%,transparent) 30%,
+      color-mix(in srgb,var(--bg) 20%,transparent) 55%,
+      transparent 70%);
+}
+.hero--photo .hero-grid{grid-template-columns:minmax(0,620px);justify-content:start}
+.hero--photo h1{text-wrap:balance}
+.hero--photo .hero-copy{text-shadow:0 1px 18px color-mix(in srgb,var(--bg) 70%,transparent)}
+.hero--photo .lede{color:var(--text)}
+@media (orientation:portrait){
+  .hero--photo{align-items:flex-end;padding-block:0 clamp(28px,6vw,48px)}
+  .hero-media img{object-position:50% 18%}
+  .hero-scrim{
+    background:linear-gradient(to top,
+      var(--bg) 0,
+      color-mix(in srgb,var(--bg) 90%,transparent) 30%,
+      color-mix(in srgb,var(--bg) 55%,transparent) 44%,
+      transparent 60%);
+  }
+  .hero--photo .hero-grid{grid-template-columns:1fr}
+}
+/* Phones: the photo fills the first screen. The copy sits at the bottom, but never
+   higher than just under the chin, so a long intro pushes the hero taller instead of
+   covering the face. The photo's lower edge always dissolves into the page. */
+@media (orientation:portrait) and (max-width:600px){
+  .hero--photo{
+    --media-h:max(calc(100svh - 70px),160vw);
+    display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;
+    min-height:var(--media-h);
+    padding-block:calc(var(--media-h) * .44) 32px;
+  }
+  .hero-media{inset:0 0 auto 0;height:max(var(--media-h),100%)}
+  .hero-scrim{inset:0}
+  .hero-media img{object-position:50% 12%}
+  .hero-scrim{
+    background:linear-gradient(to top,
+      var(--bg) 0,
+      color-mix(in srgb,var(--bg) 88%,transparent) 20%,
+      color-mix(in srgb,var(--bg) 50%,transparent) 36%,
+      transparent 52%);
+  }
+}
 
 /* ============================================================
    Stats strip
@@ -537,7 +581,6 @@ form.lead textarea{resize:vertical;min-height:96px}
    ============================================================ */
 @media (max-width:980px){
   .hero-grid{grid-template-columns:1fr;text-align:right}
-  .portrait{grid-row:1;margin-bottom:8px}
   .about-grid{grid-template-columns:1fr}
   .courses-grid{grid-template-columns:1fr;max-width:460px;margin-inline:auto}
   .videos-grid{grid-template-columns:repeat(2,1fr)}
@@ -976,3 +1019,31 @@ body.sv-modal-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce){
   .theme-toggle svg{transition:none}
 }
+
+/* ============================================================
+   ۱.۸.۰ — پلیر امن ویدیو
+   ============================================================ */
+.player-box{
+  position:relative;aspect-ratio:16/9;display:grid;place-items:center;
+  background:var(--bg-inset);border-radius:var(--radius-lg);overflow:hidden;
+}
+.sv-modal-slot .player-box{border-radius:var(--radius)}
+.player-video{width:100%;height:100%;display:block;background:#000}
+.player-msg{margin:0;padding:18px;text-align:center;color:var(--text-dim);font-size:.95rem}
+.player-start{
+  display:inline-flex;align-items:center;gap:10px;cursor:pointer;
+  padding:14px 26px;border-radius:999px;font-family:var(--font-display);font-weight:700;
+  background:var(--accent);color:var(--accent-ink);border:0;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.player-start:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.player-start svg{width:20px;height:20px}
+.player-note{margin-top:12px;font-size:.86rem;color:var(--text-mute);text-align:center}
+/* واترمارک: خوانا باشد ولی جلوی تماشا را نگیرد. */
+.player-mark{
+  position:absolute;z-index:2;pointer-events:none;user-select:none;
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.08em;
+  color:rgba(255,255,255,.34);text-shadow:0 1px 3px rgba(0,0,0,.55);
+  transition:inset-inline-start 1.6s ease,inset-block-start 1.6s ease;
+}
+@media (prefers-reduced-motion:reduce){ .player-mark{transition:none} }

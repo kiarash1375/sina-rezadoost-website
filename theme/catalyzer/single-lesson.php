@@ -22,10 +22,15 @@ while ( have_posts() ) :
 	$cat_terms = get_the_terms( $cat_id, 'lesson_cat' );
 
 	// ویدیوی خریدنی تا باز نشده پخش نمی‌شود.
-	$cat_open = catalyzer_user_can_access( $cat_id );
+	$cat_open  = catalyzer_user_can_access( $cat_id );
+	$cat_arvan = function_exists( 'catalyzer_is_arvan_video' ) && catalyzer_is_arvan_video( $cat_id );
 	if ( ! $cat_open ) {
 		$cat_embed = '';
 		$cat_watch = '';
+	}
+	// ویدیوی آروان از پلیر خودمان پخش می‌شود، نه از جاسازی آپارات.
+	if ( $cat_arvan && $cat_open ) {
+		$cat_embed = '';
 	}
 	?>
 	<div class="page-hero">
@@ -40,7 +45,20 @@ while ( have_posts() ) :
 
 	<div class="section">
 		<div class="wrap">
-			<?php if ( $cat_embed ) : ?>
+			<?php if ( $cat_arvan && $cat_open ) : ?>
+				<div class="lesson-embed">
+					<div class="embed-frame player-box" id="catPlayer">
+						<button class="player-start" type="button"
+							data-play-arvan="catPlayer" data-post="<?php echo esc_attr( $cat_id ); ?>">
+							<?php echo catalyzer_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+							<span><?php esc_html_e( 'پخش ویدیو', 'catalyzer' ); ?></span>
+						</button>
+					</div>
+				</div>
+				<p class="player-note">
+					<?php esc_html_e( 'این ویدیو فقط برای حساب شما باز شده و شماره‌ی شما روی تصویر درج می‌شود.', 'catalyzer' ); ?>
+				</p>
+			<?php elseif ( $cat_embed ) : ?>
 				<div class="lesson-embed">
 					<div class="embed-frame"><?php echo $cat_embed; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 				</div>

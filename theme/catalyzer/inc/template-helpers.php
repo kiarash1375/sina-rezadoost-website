@@ -127,17 +127,27 @@ function catalyzer_anchor_url( $url ) {
 }
 
 /**
- * آدرس تصویر پرتره‌ی هیرو (تنظیم سفارشی‌سازی، وگرنه تصویر پیش‌فرض قالب).
+ * تصویرهای پس‌زمینه‌ی هیرو: یکی افقی برای لپ‌تاپ، یکی عمودی برای گوشی.
+ * اگر در سفارشی‌سازی عکسی انتخاب شده باشد همان، وگرنه عکس‌های خود قالب.
+ *
+ * @return array{desktop: array<string,string>, mobile: array<string,string>} نوع فایل => آدرس؛ آخرین عضو، نسخه‌ی پشتیبان است.
  */
-function catalyzer_hero_portrait_url() {
-	$id = catalyzer_opt( 'hero_portrait_id' );
-	if ( $id ) {
-		$src = wp_get_attachment_image_url( (int) $id, 'large' );
+function catalyzer_hero_backgrounds() {
+	$out = array();
+	foreach ( array( 'desktop', 'mobile' ) as $which ) {
+		$id  = (int) catalyzer_opt( 'hero_bg_' . $which . '_id' );
+		$src = $id ? wp_get_attachment_image_url( $id, 'full' ) : '';
 		if ( $src ) {
-			return $src;
+			$out[ $which ] = array( 'img' => $src );
+		} else {
+			$base          = CATALYZER_URI . '/assets/img/hero-' . $which;
+			$out[ $which ] = array(
+				'webp' => $base . '.webp',
+				'jpg'  => $base . '.jpg',
+			);
 		}
 	}
-	return CATALYZER_URI . '/assets/img/sina-rezadoost.jpg';
+	return $out;
 }
 
 /**

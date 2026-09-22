@@ -9,10 +9,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$portrait = catalyzer_hero_portrait_url();
+$bg = catalyzer_hero_backgrounds();
 ?>
-<section class="hero">
-	<div class="hero-bg" aria-hidden="true"></div>
+<section class="hero hero--photo" data-hero-fade>
+	<div class="hero-media" aria-hidden="true">
+		<picture>
+			<?php foreach ( $bg['mobile'] as $type => $src ) : ?>
+				<source media="(orientation: portrait)" srcset="<?php echo esc_url( $src ); ?>"<?php echo 'webp' === $type ? ' type="image/webp"' : ''; ?>>
+			<?php endforeach; ?>
+			<?php if ( isset( $bg['desktop']['webp'] ) ) : ?>
+				<source srcset="<?php echo esc_url( $bg['desktop']['webp'] ); ?>" type="image/webp">
+			<?php endif; ?>
+			<img src="<?php echo esc_url( end( $bg['desktop'] ) ); ?>" alt="" width="1672" height="941" fetchpriority="high" decoding="async">
+		</picture>
+	</div>
+	<div class="hero-scrim" aria-hidden="true"></div>
 	<div class="wrap">
 		<div class="hero-grid">
 			<div class="hero-copy reveal">
@@ -45,34 +56,6 @@ $portrait = catalyzer_hero_portrait_url();
 				<?php endif; ?>
 			</div>
 
-			<div class="portrait reveal">
-				<svg viewBox="0 0 400 452" role="img" aria-label="<?php echo esc_attr( catalyzer_opt( 'about_heading', 'دکتر سینا رضادوست' ) ); ?>">
-					<defs>
-						<clipPath id="catHex">
-							<path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z"/>
-						</clipPath>
-						<linearGradient id="catHexBg" x1="0" y1="0" x2="1" y2="1">
-							<stop offset="0" stop-color="var(--bg-3)"/>
-							<stop offset="1" stop-color="var(--bg-inset)"/>
-						</linearGradient>
-					</defs>
-					<g class="spin-slow" opacity="0.5">
-						<path d="M200 -6 L416 118 L416 366 L200 490 L-16 366 L-16 118 Z" fill="none" stroke="var(--line-strong)" stroke-width="1.4" stroke-dasharray="3 9"/>
-					</g>
-					<path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z" class="hexframe-fill"/>
-					<g clip-path="url(#catHex)">
-						<rect x="0" y="0" width="400" height="452" fill="url(#catHexBg)"/>
-						<image href="<?php echo esc_url( $portrait ); ?>" xlink:href="<?php echo esc_url( $portrait ); ?>" x="-16" y="0" width="432" height="452" preserveAspectRatio="xMidYMid slice"/>
-					</g>
-					<path d="M200 6 L392 116 L392 336 L200 446 L8 336 L8 116 Z" class="hexframe-ring"/>
-				</svg>
-
-				<div class="tile" aria-hidden="true">
-					<div class="num"><span><?php echo esc_html( catalyzer_opt( 'hero_tile_num', '۶' ) ); ?></span><span><?php echo esc_html( catalyzer_opt( 'hero_tile_sym', 'C' ) ); ?></span></div>
-					<div class="sym"><?php echo esc_html( catalyzer_opt( 'hero_tile_sym', 'C' ) ); ?></div>
-					<div class="nm"><?php echo esc_html( catalyzer_opt( 'hero_tile_name', 'کربن · کاتالیزور' ) ); ?></div>
-				</div>
-			</div>
 		</div>
 	</div>
 </section>
