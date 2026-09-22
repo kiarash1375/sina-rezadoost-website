@@ -121,10 +121,8 @@ function catalyzer_customize_register( $wp ) {
 	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_btn2_text', 'دکمه‌ی دوم — متن', array( 'default' => 'تماشای نمونه‌ی تدریس' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_btn2_url', 'دکمه‌ی دوم — لینک', array( 'default' => '#videos' ) );
 	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_trust', 'خط اعتماد (زیر دکمه‌ها)', array( 'default' => 'بیش از ۱۲ سال تدریس تخصصیِ کنکور در مشهد' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_portrait_id', 'عکس مدرس', array( 'type' => 'image' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_tile_sym', 'کاشی — نماد', array( 'default' => 'C' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_tile_num', 'کاشی — عدد', array( 'default' => '۶' ) );
-	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_tile_name', 'کاشی — نام', array( 'default' => 'کربن · کاتالیزور' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_bg_desktop_id', 'عکس پس‌زمینه — لپ‌تاپ (افقی)', array( 'type' => 'image' ) );
+	catalyzer_cz_field( $wp, 'catalyzer_hero', 'hero_bg_mobile_id', 'عکس پس‌زمینه — گوشی (عمودی)', array( 'type' => 'image' ) );
 
 	/* ---------- آمار ---------- */
 	$add_section( 'catalyzer_stats', 'نوار آمار', 30 );

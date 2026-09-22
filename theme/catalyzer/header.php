@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <!doctype html>
-<html dir="rtl" lang="<?php echo esc_attr( str_replace( '_', '-', get_locale() ) ); ?>">
+<html dir="rtl" data-theme="light" lang="<?php echo esc_attr( str_replace( '_', '-', get_locale() ) ); ?>">
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
